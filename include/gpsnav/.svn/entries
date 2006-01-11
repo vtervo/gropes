@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="39"
+   name=""
+   committed-date="2005-08-29T18:15:28.785217Z"
+   url="http://salvia.homeip.net:/svn/gpsnav/include/gpsnav"
+   last-author="jey"
+   kind="dir"
+   uuid="5af10af9-43fd-0310-8338-973166bd89f7"
+   prop-time="2006-01-11T19:53:39.000000Z"
+   revision="46"/>
+<entry
+   committed-rev="39"
+   name="map.h"
+   text-time="2006-01-11T19:53:39.000000Z"
+   committed-date="2005-08-29T18:15:28.785217Z"
+   checksum="01a946815602e8764242c200ada557f4"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:39.000000Z"/>
+<entry
+   committed-rev="39"
+   name="gpsnav.h"
+   text-time="2006-01-11T19:53:39.000000Z"
+   committed-date="2005-08-29T18:15:28.785217Z"
+   checksum="cb40caa9fa060c22002a4df36ab5d755"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:39.000000Z"/>
+<entry
+   committed-rev="34"
+   name="Makefile.am"
+   text-time="2006-01-11T19:53:39.000000Z"
+   committed-date="2005-08-28T11:16:33.049700Z"
+   checksum="1519ca84a9052706fd77ded7c9b4860b"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:39.000000Z"/>
+<entry
+   committed-rev="36"
+   name="pixcache.h"
+   text-time="2006-01-11T19:53:39.000000Z"
+   committed-date="2005-08-28T18:18:24.786211Z"
+   checksum="c48751a7726d3e9d6d1db90e654a7511"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:39.000000Z"/>
+<entry
+   committed-rev="19"
+   name="coord.h"
+   text-time="2006-01-11T19:53:39.000000Z"
+   committed-date="2005-08-17T17:55:01.550680Z"
+   checksum="ce93d604d78ac9b0a1fcb92865998b99"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:39.000000Z"/>
+</wc-entries>

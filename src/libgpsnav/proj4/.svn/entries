@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="34"
+   name=""
+   committed-date="2005-08-28T11:16:33.049700Z"
+   url="http://salvia.homeip.net:/svn/gpsnav/src/libgpsnav/proj4"
+   last-author="jey"
+   kind="dir"
+   uuid="5af10af9-43fd-0310-8338-973166bd89f7"
+   prop-time="2006-01-11T19:53:46.000000Z"
+   revision="46"/>
+<entry
+   committed-rev="2"
+   name="lib_proj.h"
+   text-time="2006-01-11T19:53:46.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="7958d63116f350c75edddfdc1a3e863c"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:42.000000Z"/>
+<entry
+   committed-rev="32"
+   name="pj_list-orig.h"
+   text-time="2006-01-11T19:53:46.000000Z"
+   committed-date="2005-08-28T11:05:34.716449Z"
+   checksum="4e8c27dab899a6a5144323d4a9fc0643"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:42.000000Z"/>
+<entry
+   committed-rev="32"
+   name="pj_list.h"
+   text-time="2006-01-11T19:53:46.000000Z"
+   committed-date="2005-08-28T11:05:34.716449Z"
+   checksum="15bd562cea56afb07f5668af7639bfae"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:43.000000Z"/>
+<entry
+   name="misc"
+   kind="dir"/>
+<entry
+   name="conic"
+   kind="dir"/>
+<entry
+   committed-rev="2"
+   name="emess.c"
+   text-time="2006-01-11T19:53:46.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="48c472310b4ba47f70d8502fab3da5fe"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:46.000000Z"/>
+<entry
+   committed-rev="2"
+   name="README"
+   text-time="2006-01-11T19:53:46.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="4ef85c33859a9aba10b18ba4e6e96f82"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:46.000000Z"/>
+<entry
+   name="azimuthal"
+   kind="dir"/>
+<entry
+   name="pseudo"
+   kind="dir"/>
+<entry
+   committed-rev="2"
+   name="REL_050319"
+   text-time="2006-01-11T19:53:46.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="d41d8cd98f00b204e9800998ecf8427e"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:42.000000Z"/>
+<entry
+   committed-rev="2"
+   name="lproj.c"
+   text-time="2006-01-11T19:53:46.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="0e41847045ab324d9176bb8e6d5eda54"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:42.000000Z"/>
+<entry
+   committed-rev="34"
+   name="Makefile.am"
+   text-time="2006-01-11T19:53:46.000000Z"
+   committed-date="2005-08-28T11:16:33.049700Z"
+   checksum="7eade430e006e51af4ca2f0df0e67347"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:42.000000Z"/>
+<entry
+   name="cylinder"
+   kind="dir"/>
+<entry
+   committed-rev="2"
+   name="lproj.h"
+   text-time="2006-01-11T19:53:46.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="7d16b9713bcfe4b82237cd9a3c4ff995"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:45.000000Z"/>
+<entry
+   name="support"
+   kind="dir"/>
+</wc-entries>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="39"
+   name=""
+   committed-date="2005-08-29T18:15:28.785217Z"
+   url="http://salvia.homeip.net:/svn/gpsnav/include"
+   last-author="jey"
+   kind="dir"
+   uuid="5af10af9-43fd-0310-8338-973166bd89f7"
+   prop-time="2006-01-11T19:53:39.000000Z"
+   revision="46"/>
+<entry
+   committed-rev="34"
+   name="Makefile.am"
+   text-time="2006-01-11T19:53:39.000000Z"
+   committed-date="2005-08-28T11:16:33.049700Z"
+   checksum="9ee35211d096522236d72e57cf6b3557"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:39.000000Z"/>
+<entry
+   name="gpsnav"
+   kind="dir"/>
+</wc-entries>

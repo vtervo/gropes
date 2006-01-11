@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="32"
+   name=""
+   committed-date="2005-08-28T11:05:34.716449Z"
+   url="http://salvia.homeip.net:/svn/gpsnav/src/libgpsnav/proj4/misc"
+   last-author="jey"
+   kind="dir"
+   uuid="5af10af9-43fd-0310-8338-973166bd89f7"
+   prop-time="2006-01-11T19:53:45.000000Z"
+   revision="46"/>
+<entry
+   committed-rev="2"
+   name="PJ_august.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="1bfcbe495b41e7f4058114452190267d"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:44.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_guyou.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="11b8155c623bf01cfe7d10408b3ca94b"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:44.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_apian2.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="3de0b2bc23de814d0b3ecd714a003da0"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:44.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_chamb.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="21fa225642205d6e727906cb8f89f777"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:44.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_lagrng.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="4c33715c3c84aa7376ac2e50861c39ab"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:44.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_nocol.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="1ad1484bd3b6d313f6b951b286a09784"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:44.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_tpeqd.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="5cf6827c99e97bcb26b35cd41a9007bf"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:44.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_vandg2.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="e5b07be944544983b9f40c3300550d8f"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:44.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_bacon.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="d22b1abb5f5588782530e33473dafaa6"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:44.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_vandg4.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="2a78f552753a45cff79f9f9150067c8d"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:44.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_ob_tran.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="782c2bf45272f747ce1a5f3cfaa9dfca"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:44.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_lask.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="f454c19580f1735796561e96f5244d4c"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:44.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_dummy.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="350931d70a58be03e2e02578afcaddf9"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:44.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_four1.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="3ce81996cddef1e9938f056867215d1e"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:44.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_vandg.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="a93fd1a5500059b0bd243e6ed232850c"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:44.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_larr.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="c535f7cc827f6c37fe795b59e35184bd"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:45.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_eisen.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="b3b5eaf8042cb289e50a7c16641dfccf"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:45.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_oea.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="a91ff01272bd2b1c9b5bd999510b4d0c"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:45.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_armadillo.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="8b352b990a6485770fd36656f3e295de"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:45.000000Z"/>
+<entry
+   committed-rev="2"
+   name="PJ_airy.c"
+   text-time="2006-01-11T19:53:45.000000Z"
+   committed-date="2005-08-06T18:03:45.749871Z"
+   checksum="f27831d72751b597316766dd619a62ca"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:45.000000Z"/>
+</wc-entries>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="46"
+   name=""
+   committed-date="2005-08-29T22:35:39.698884Z"
+   url="http://salvia.homeip.net:/svn/gpsnav/src/gropes"
+   last-author="jey"
+   kind="dir"
+   uuid="5af10af9-43fd-0310-8338-973166bd89f7"
+   prop-time="2006-01-11T19:53:40.000000Z"
+   revision="46"/>
+<entry
+   committed-rev="46"
+   name="gropes.c"
+   text-time="2006-01-11T19:53:40.000000Z"
+   committed-date="2005-08-29T22:35:39.698884Z"
+   checksum="12e7cbed4f08badfc095f648a8b0304e"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:39.000000Z"/>
+<entry
+   committed-rev="39"
+   name="gropes-maptool-hel-kartta.c"
+   text-time="2006-01-11T19:53:40.000000Z"
+   committed-date="2005-08-29T18:15:28.785217Z"
+   checksum="5a788429384d0d9034b2c58027a3bdcb"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:40.000000Z"/>
+<entry
+   committed-rev="39"
+   name="gropes-maptool-expedia.c"
+   text-time="2006-01-11T19:53:40.000000Z"
+   committed-date="2005-08-29T18:15:28.785217Z"
+   checksum="f1a52611997fb2f9709899918d3ff9aa"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:40.000000Z"/>
+<entry
+   committed-rev="35"
+   name="Makefile.am"
+   text-time="2006-01-11T19:53:40.000000Z"
+   committed-date="2005-08-28T15:44:44.243925Z"
+   checksum="ea8321a868c3629498eba115cb0d4da4"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:40.000000Z"/>
+<entry
+   committed-rev="39"
+   name="gropes-maptool.c"
+   text-time="2006-01-11T19:53:40.000000Z"
+   committed-date="2005-08-29T18:15:28.785217Z"
+   checksum="efe012c8cfbbb4280c5a10b414a8c4a8"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:40.000000Z"/>
+<entry
+   committed-rev="39"
+   name="gropes-maptool-oikotie.c"
+   text-time="2006-01-11T19:53:40.000000Z"
+   committed-date="2005-08-29T18:15:28.785217Z"
+   checksum="e02adf5280d6fca2ec8369080d90e0ef"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:40.000000Z"/>
+</wc-entries>

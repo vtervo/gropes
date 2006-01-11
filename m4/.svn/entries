@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="34"
+   name=""
+   committed-date="2005-08-28T11:16:33.049700Z"
+   url="http://salvia.homeip.net:/svn/gpsnav/m4"
+   last-author="jey"
+   kind="dir"
+   uuid="5af10af9-43fd-0310-8338-973166bd89f7"
+   prop-time="2006-01-11T19:53:39.000000Z"
+   revision="46"/>
+<entry
+   committed-rev="34"
+   name="Makefile.am"
+   text-time="2006-01-11T19:53:39.000000Z"
+   committed-date="2005-08-28T11:16:33.049700Z"
+   checksum="c4ddac768eaef2978da7b66c3a1d7d0d"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:39.000000Z"/>
+<entry
+   committed-rev="31"
+   name="libcurl.m4"
+   text-time="2006-01-11T19:53:39.000000Z"
+   committed-date="2005-08-27T18:09:01.225397Z"
+   checksum="db5ecf8a9ef22dcdcb5ed3e504a5c178"
+   last-author="jey"
+   kind="file"
+   prop-time="2006-01-11T19:53:39.000000Z"/>
+</wc-entries>
