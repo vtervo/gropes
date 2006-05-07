@@ -108,7 +108,7 @@ pj_auth_lat(double phi, const void *a) {
 	double
 pj_auth_inv(double beta, const void *a) {
 	int max;
-	double dl, c, phi, s, ses, t;
+	double dl, c, phi;
 
 	c = sin(beta);
 	phi = beta;

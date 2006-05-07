@@ -362,7 +362,7 @@ int main(int argc, char *argv[])
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), "Gropes");
 
-	create_ui(&gropes_state, window);
+	create_ui(&gropes_state);
 
 	gropes_state.big_map.me.area.height = gropes_state.big_map.me.area.width = 10;
 	gropes_state.big_map.ref_map = ref_map;

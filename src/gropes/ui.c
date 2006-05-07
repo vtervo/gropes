@@ -224,7 +224,7 @@ static GtkWidget *create_big_map_darea(GtkWidget *topwin, struct gropes_state *s
 	return darea;
 }
 
-int create_ui(struct gropes_state *gs, GtkWidget *main_win)
+int create_ui(struct gropes_state *gs)
 {
 	GtkWidget *vbox, *menu_bar, *big_map_darea;
 	GtkUIManager *ui_manager;
@@ -232,6 +232,7 @@ int create_ui(struct gropes_state *gs, GtkWidget *main_win)
 	GtkAccelGroup *accel_group;
 	GtkAction *act;
 	GError *error;
+	GtkWindow *main_win;
 
 //	gtk_signal_connect(GTK_OBJECT(window), "key-press-event",
 //			   GTK_SIGNAL_FUNC(on_win_key_pressed), state);
