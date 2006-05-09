@@ -90,4 +90,5 @@ void move_item(struct gropes_state *gs, struct map_state *ms,
 	}
 	gtk_widget_queue_draw_area(ms->darea, area->x, area->y,
 				   area->width, area->height);
+	item->update_info(item);
 }

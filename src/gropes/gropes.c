@@ -260,11 +260,6 @@ void gropes_shutdown(void)
 	gtk_main_quit();
 }
 
-static void on_main_window_destroy(GtkWidget *widget, gpointer data)
-{
-	gropes_shutdown();
-}
-
 static void update_cb(void *arg, const struct gps_fix_t *fix)
 {
 	struct gropes_state *gs = arg;
@@ -286,6 +281,8 @@ static void update_cb(void *arg, const struct gps_fix_t *fix)
 		pos.la = fix->latitude;
 		pos.lo = fix->longitude;
 		gdk_threads_enter();
+		item->speed = fix->speed;
+		item->track = fix->track;
 		move_item(gs, ms, item, &pos);
 		gdk_threads_leave();
 	}
@@ -298,7 +295,6 @@ int main(int argc, char *argv[])
 	struct gps_coord center_pos;
 	struct gps_mcoord center_mpos;
 	double scale;
-	GtkWidget *window;
 	struct gps_map **maps;
 	int i, r;
 
@@ -359,18 +355,11 @@ int main(int argc, char *argv[])
 
 	free(maps);
 
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(window), "Gropes");
-
-	create_ui(&gropes_state);
-
 	gropes_state.big_map.me.area.height = gropes_state.big_map.me.area.width = 10;
 	gropes_state.big_map.ref_map = ref_map;
 	change_map_center(&gropes_state, &gropes_state.big_map, &center_mpos, scale);
 
-	gtk_signal_connect(GTK_OBJECT(window), "destroy", GTK_SIGNAL_FUNC(on_main_window_destroy), NULL);
-
-	gtk_widget_show_all(window);
+	create_ui(&gropes_state);
 
 	gdk_threads_enter();
 	gtk_main();

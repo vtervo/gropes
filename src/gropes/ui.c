@@ -6,8 +6,25 @@
 #define DEFAULT_WIDTH		800
 #define DEFAULT_HEIGHT		480
 
+struct ui_info_area {
+	GtkWidget *location;
+};
+
+static struct ui_info_area info_area;
+
+static void update_infoarea(struct item_on_screen *item)
+{
+	char location[100];
+
+	snprintf(location, sizeof(location),
+			"Speed %.2f\nLat %.4f\nLon %.4f\nCourse %.1f",
+			item->speed, item->pos.la, item->pos.lo, item->track);
+
+	gtk_label_set_text(GTK_LABEL(info_area.location), location);
+}
+
 static void scroll_map(struct gropes_state *gs, struct map_state *ms,
-		       int diff_x, int diff_y, double new_scale)
+			int diff_x, int diff_y, double new_scale)
 {
 	struct gps_mcoord mcent;
 
@@ -224,20 +241,32 @@ static GtkWidget *create_big_map_darea(GtkWidget *topwin, struct gropes_state *s
 	return darea;
 }
 
+static void on_main_window_destroy(GtkWidget *widget, gpointer data)
+{
+	gropes_shutdown();
+}
+
 int create_ui(struct gropes_state *gs)
 {
-	GtkWidget *vbox, *menu_bar, *big_map_darea;
+	GtkWidget *cmd_area, *map_area, *menu_bar, *big_map_darea, *map_and_cmd_area, *main_win,
+		  *vbox;
 	GtkUIManager *ui_manager;
 	GtkActionGroup *action_group;
 	GtkAccelGroup *accel_group;
 	GtkAction *act;
 	GError *error;
-	GtkWindow *main_win;
 
-//	gtk_signal_connect(GTK_OBJECT(window), "key-press-event",
-//			   GTK_SIGNAL_FUNC(on_win_key_pressed), state);
+	main_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title(GTK_WINDOW(main_win), "Gropes");
+
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(main_win), vbox);
+	cmd_area = gtk_vbox_new(TRUE, 10);
+	map_and_cmd_area = gtk_hpaned_new();
+
+	info_area.location = gtk_label_new("Speed: 20kn\nDirection 120");
+	gtk_container_add(GTK_CONTAINER(cmd_area), GTK_WIDGET(info_area.location));
+	gtk_paned_add1(GTK_PANED(map_and_cmd_area), cmd_area);
 
 	action_group = gtk_action_group_new("MenuActions");
 	gtk_action_group_add_actions(action_group, menu_entries,
@@ -265,8 +294,14 @@ int create_ui(struct gropes_state *gs)
 	big_map_darea = create_big_map_darea(main_win, gs);
 	menu_bar = gtk_ui_manager_get_widget (ui_manager, "/MainMenu");
 
+	gtk_paned_add2(GTK_PANED(map_and_cmd_area), big_map_darea);
 	gtk_box_pack_start(GTK_BOX(vbox), menu_bar, FALSE, FALSE, 2);
-	gtk_box_pack_end(GTK_BOX(vbox), big_map_darea, TRUE, TRUE, 2);
+	gtk_box_pack_end(GTK_BOX(vbox), map_and_cmd_area, TRUE, TRUE, 2);
+
+	gtk_signal_connect(GTK_OBJECT(main_win), "destroy", GTK_SIGNAL_FUNC(on_main_window_destroy), NULL);
+
+	gtk_widget_show_all(main_win);
+	gs->big_map.me.update_info = update_infoarea;
 
 	return 0;
 }
