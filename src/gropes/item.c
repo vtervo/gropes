@@ -69,10 +69,14 @@ void move_item(struct gropes_state *gs, struct map_state *ms,
 		    item->pos_valid)
 			return;
 
+		if (item->update_info)
+			item->update_info(item);
 		was_valid = item->pos_valid;
 		item->pos_valid = 1;
 		item->pos = *pos;
 		old_area = *area;
+		if (gs->opt_follow_gps)
+			change_map_center(gs, ms, &item->mpos, ms->scale);
 		pthread_mutex_lock(&ms->mutex);
 		calc_item_pos(gs, ms, item);
 		pthread_mutex_unlock(&ms->mutex);
@@ -90,5 +94,4 @@ void move_item(struct gropes_state *gs, struct map_state *ms,
 	}
 	gtk_widget_queue_draw_area(ms->darea, area->x, area->y,
 				   area->width, area->height);
-	item->update_info(item);
 }
