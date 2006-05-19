@@ -7,20 +7,41 @@
 #define DEFAULT_HEIGHT		480
 
 struct ui_info_area {
-	GtkWidget *location;
+	GtkWidget *speed_frame;
+	GtkWidget *speed_display;
+	GtkWidget *location_frame;
+	GtkWidget *location_display;
+	GtkWidget *course_frame;
+	GtkWidget *course_display;
 };
 
 static struct ui_info_area info_area;
 
 static void update_infoarea(struct item_on_screen *item)
 {
-	char location[100];
+	char *location_color;
+	char *location;
+	char *speed;
+	char *course;
 
-	snprintf(location, sizeof(location),
-			"Speed %.2f\nLat %.4f\nLon %.4f\nCourse %.1f",
-			item->speed, item->pos.la, item->pos.lo, item->track);
+	if (item->pos_valid)
+		location_color = g_markup_printf_escaped("grey");
+	else 
+		location_color = g_markup_printf_escaped("red");
 
-	gtk_label_set_text(GTK_LABEL(info_area.location), location);
+	location = g_markup_printf_escaped("<span size=\"xx-large\" background=\"%s\">La %.4f\nLo %.4f</span>",
+				location_color, item->pos.la, item->pos.lo);
+	speed = g_markup_printf_escaped("<span size=\"xx-large\">%.1f kt</span>", item->speed);
+	course = g_markup_printf_escaped("<span size=\"xx-large\">%.1f</span>", item->track);
+
+	gtk_label_set_markup(GTK_LABEL(info_area.location_display), location);
+	gtk_label_set_markup(GTK_LABEL(info_area.speed_display), speed);
+	gtk_label_set_markup(GTK_LABEL(info_area.course_display), course);
+
+	g_free(location_color);
+	g_free(location);
+	g_free(speed);
+	g_free(course);
 }
 
 static void scroll_map(struct gropes_state *gs, struct map_state *ms,
@@ -265,8 +286,30 @@ int create_ui(struct gropes_state *gs)
 	cmd_area = gtk_vbox_new(TRUE, 10);
 	map_and_cmd_area = gtk_hpaned_new();
 
-	info_area.location = gtk_label_new("Speed: 20kn\nDirection 120");
-	gtk_container_add(GTK_CONTAINER(cmd_area), GTK_WIDGET(info_area.location));
+	info_area.location_frame = gtk_frame_new("Location");
+	info_area.location_display = gtk_label_new(NULL);
+	gtk_label_set_use_markup(GTK_LABEL(info_area.location_display), TRUE);
+	gtk_label_set_markup(GTK_LABEL(info_area.location_display),
+			     "<span size=\"x-large\" background=\"red\">La\nLo</span>");
+
+	info_area.speed_frame = gtk_frame_new("Speed");
+	info_area.speed_display = gtk_label_new(NULL);
+	gtk_label_set_use_markup(GTK_LABEL(info_area.speed_display), TRUE);
+	gtk_label_set_markup(GTK_LABEL(info_area.speed_display), 
+			     "<span size=\"xx-large\">0 kt</span>");
+
+	info_area.course_frame = gtk_frame_new("Course");
+	info_area.course_display = gtk_label_new(NULL);
+	gtk_label_set_use_markup(GTK_LABEL(info_area.course_display), TRUE);
+	gtk_label_set_markup(GTK_LABEL(info_area.course_display), 
+			     "<span size=\"xx-large\">0 deg</span>");
+
+	gtk_container_add(GTK_CONTAINER(info_area.speed_frame), info_area.speed_display);
+	gtk_container_add(GTK_CONTAINER(info_area.location_frame), info_area.location_display);
+	gtk_container_add(GTK_CONTAINER(info_area.course_frame), info_area.course_display);
+	gtk_container_add(GTK_CONTAINER(cmd_area), GTK_WIDGET(info_area.speed_frame));
+	gtk_container_add(GTK_CONTAINER(cmd_area), GTK_WIDGET(info_area.location_frame));
+	gtk_container_add(GTK_CONTAINER(cmd_area), GTK_WIDGET(info_area.course_frame));
 	gtk_paned_add1(GTK_PANED(map_and_cmd_area), cmd_area);
 
 	action_group = gtk_action_group_new("MenuActions");
