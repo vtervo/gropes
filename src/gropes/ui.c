@@ -43,7 +43,6 @@ static void update_infoarea(struct item_on_screen *item)
 	g_free(speed);
 	g_free(course);
 }
-
 static void scroll_map(struct gropes_state *gs, struct map_state *ms,
 			int diff_x, int diff_y, double new_scale)
 {
@@ -62,6 +61,12 @@ static gboolean on_darea_clicked(GtkWidget *widget,
 	struct map_state *map_state = user_data;
 	double new_scale;
 	int diff_x, diff_y;
+	GtkToggleAction *action;
+
+	action = gtk_ui_manager_get_action(gropes_state.ui_manager,
+					   "ui/MainMenu/GPSMenu/GPSFollow");
+	gropes_state.opt_follow_gps = 0;
+	gtk_toggle_action_set_active(action, FALSE);
 
 	diff_x = event->x - widget->allocation.width / 2;
 	diff_y = event->y - widget->allocation.height / 2;
