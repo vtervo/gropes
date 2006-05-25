@@ -184,8 +184,11 @@ static void on_gps_disconnect(GtkAction *action, struct gropes_state *gs)
 
 static void on_gps_follow(GtkToggleAction *action, struct gropes_state *gs)
 {
+	struct map_state *ms = &gs->big_map;
+
 	printf("Setting follow mode to %d\n", gtk_toggle_action_get_active(action));
 	gs->opt_follow_gps = gtk_toggle_action_get_active(action);
+	change_map_center(gs, ms, &ms->me.mpos, ms->scale);
 }
 
 static void on_menu_exit(GtkAction *action, struct gropes_state *gs)

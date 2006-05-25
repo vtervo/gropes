@@ -281,7 +281,7 @@ static void update_cb(void *arg, const struct gps_fix_t *fix)
 		pos.la = fix->latitude;
 		pos.lo = fix->longitude;
 		gdk_threads_enter();
-		item->speed = fix->speed;
+		item->speed = fix->speed * MPS_TO_KNOTS;
 		item->track = fix->track;
 		move_item(gs, ms, item, &pos);
 		gdk_threads_leave();
@@ -311,7 +311,7 @@ int main(int argc, char *argv[])
 	gpsnav_set_update_callback(nav, update_cb, &gropes_state);
 
 	/* Pixel cache of 10 MB by default */
-	nav->pc_max_size = 10 * 1024 * 1024;
+	nav->pc_max_size = 500 * 1024 * 1024;
 
 	r = gpsnav_mapdb_read(nav, "mapdb.xml");
 	if (r < 0)

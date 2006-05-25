@@ -36,7 +36,7 @@ static struct gps_map *find_best_map(struct gps_map *ref_map, struct gps_map **m
 		else {
 			scale_factor = map->scale_y / scale;
 			/* Do not allow zooming out too much */
-			if (scale_factor < 0.25)
+			if (scale_factor < 0.0025)
 			    scale_factor = 0;
 		}
 		/* A good scale is vewy, vewy important for us */
@@ -244,7 +244,6 @@ static int generate_map_layout(struct gpsnav *nav, struct gps_map *ref_map,
 	marea.start.e = zero_marea->start.e + screen_area->x * scale;
 	marea.start.n = marea.end.n - screen_area->height * scale;
 	marea.end.e = marea.start.e + screen_area->width * scale;
-	printf("\n");
 	print_area("zero ", zero_marea, zero_area);
 	print_area("gen  ", &marea, screen_area);
 	assert(screen_area->width > 0);
