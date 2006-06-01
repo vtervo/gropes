@@ -1,6 +1,5 @@
 #include <string.h>
 #include <gtk/gtk.h>
-
 #include "gropes.h"
 
 #define DEFAULT_WIDTH		800
@@ -13,36 +12,63 @@ struct ui_info_area {
 	GtkWidget *location_display;
 	GtkWidget *course_frame;
 	GtkWidget *course_display;
+	GtkWidget *pointer_loc_frame;
+	GtkWidget *pointer_loc_display;
 };
 
 static struct ui_info_area info_area;
 
+static char *fmt_location(const struct gps_coord *coord)
+{
+	char buf[64];
+	int deg_la, deg_lo, min_la, min_lo;
+	double sec_la, sec_lo;
+	char ns, ew;
+
+	ns = coord->la > 0 ? 'N' : 'S';
+	ew = coord->lo > 0 ? 'E' : 'W';
+	deg_la = floor(coord->la);
+	deg_lo = floor(coord->lo);
+	min_la = floor((coord->la - deg_la) * 60.0);
+	min_lo = floor((coord->lo - deg_lo) * 60.0);
+	sec_la = (coord->la - deg_la - min_la / 60.0) * 3600.0;
+	sec_lo = (coord->lo - deg_lo - min_lo / 60.0) * 3600.0;
+
+	sprintf(buf, "%d&#0176;%02d.%03d&apos;%c\n%d&#0176;%02d.%03d&apos;%c",
+		deg_la, min_la, (int) (sec_la * 1000 / 60), ns,
+		deg_lo, min_lo, (int) (sec_lo * 1000 / 60), ew);
+
+	return strdup(buf);
+}
+
 static void update_infoarea(struct item_on_screen *item)
 {
 	char *location_color;
-	char *location;
+	char location[128];
 	char *speed;
-	char *course;
+	char course[64];
+	char *pos;
 
 	if (item->pos_valid)
 		location_color = g_markup_printf_escaped("grey");
-	else 
+	else
 		location_color = g_markup_printf_escaped("red");
 
-	location = g_markup_printf_escaped("<span size=\"xx-large\" background=\"%s\">La %.4f\nLo %.4f</span>",
-				location_color, item->pos.la, item->pos.lo);
+	pos = fmt_location(&item->pos);
+	snprintf(location, sizeof(location), "<span size=\"xx-large\" background=\"%s\">%s</span>",
+					   location_color, pos);
 	speed = g_markup_printf_escaped("<span size=\"xx-large\">%.1f kt</span>", item->speed);
-	course = g_markup_printf_escaped("<span size=\"xx-large\">%.1f</span>", item->track);
+	snprintf(course, sizeof(course), "<span size=\"xx-large\">%.1f&#0176;</span>", item->track);
 
 	gtk_label_set_markup(GTK_LABEL(info_area.location_display), location);
 	gtk_label_set_markup(GTK_LABEL(info_area.speed_display), speed);
 	gtk_label_set_markup(GTK_LABEL(info_area.course_display), course);
 
+	g_free(pos);
 	g_free(location_color);
-	g_free(location);
 	g_free(speed);
-	g_free(course);
 }
+
 static void scroll_map(struct gropes_state *gs, struct map_state *ms,
 			int diff_x, int diff_y, double new_scale)
 {
@@ -79,6 +105,34 @@ static gboolean on_darea_clicked(GtkWidget *widget,
 		new_scale *= 1.5;
 
 	scroll_map(&gropes_state, map_state, diff_x, diff_y, new_scale);
+
+	return TRUE;
+}
+
+static gboolean on_pointer_motion(GtkWidget *widget,
+				  GdkEventMotion *event,
+				  gpointer user_data)
+{
+	struct map_state *ms = user_data;
+	int diff_x, diff_y;
+	struct gps_mcoord mpoint;
+	struct gps_coord point;
+	char pointer_loc[64], *pos;
+
+	diff_x = event->x - widget->allocation.width / 2;
+	diff_y = event->y - widget->allocation.height / 2;
+	mpoint = ms->center_mpos;
+	mpoint.n -= diff_y * ms->scale;
+	mpoint.e += diff_x * ms->scale;
+
+	gpsnav_get_coord_for_metric(ms->ref_map, &mpoint, &point);
+
+	pos = fmt_location(&point);
+	sprintf(pointer_loc, "<span size=\"xx-large\">%s</span>", pos);
+
+	gtk_label_set_markup(GTK_LABEL(info_area.pointer_loc_display), pointer_loc);
+
+	g_free(pos);
 
 	return TRUE;
 }
@@ -188,7 +242,8 @@ static void on_gps_follow(GtkToggleAction *action, struct gropes_state *gs)
 
 	printf("Setting follow mode to %d\n", gtk_toggle_action_get_active(action));
 	gs->opt_follow_gps = gtk_toggle_action_get_active(action);
-	change_map_center(gs, ms, &ms->me.mpos, ms->scale);
+	if (ms->me.pos_valid)
+		change_map_center(gs, ms, &ms->me.mpos, ms->scale);
 }
 
 static void on_menu_exit(GtkAction *action, struct gropes_state *gs)
@@ -262,9 +317,12 @@ static GtkWidget *create_big_map_darea(GtkWidget *topwin, struct gropes_state *s
 			   GTK_SIGNAL_FUNC(on_darea_configure), &state->big_map);
 	gtk_signal_connect(GTK_OBJECT(darea), "button-press-event",
 			   GTK_SIGNAL_FUNC(on_darea_clicked), &state->big_map);
+	gtk_signal_connect(GTK_OBJECT(darea), "motion-notify-event",
+			   GTK_SIGNAL_FUNC(on_pointer_motion), &state->big_map);
 
 	gtk_widget_set_events(darea, GDK_EXPOSURE_MASK | GDK_PROPERTY_CHANGE_MASK |
-			      GDK_BUTTON_PRESS_MASK | GDK_KEY_PRESS_MASK);
+			      GDK_BUTTON_PRESS_MASK | GDK_KEY_PRESS_MASK |
+			      GDK_POINTER_MOTION_MASK);
 
 	ms->darea = darea;
 
@@ -298,7 +356,7 @@ int create_ui(struct gropes_state *gs)
 	info_area.location_display = gtk_label_new(NULL);
 	gtk_label_set_use_markup(GTK_LABEL(info_area.location_display), TRUE);
 	gtk_label_set_markup(GTK_LABEL(info_area.location_display),
-			     "<span size=\"x-large\" background=\"red\">La\nLo</span>");
+			     "<span size=\"x-large\" background=\"red\">N\nE</span>");
 
 	info_area.speed_frame = gtk_frame_new("Speed");
 	info_area.speed_display = gtk_label_new(NULL);
@@ -310,14 +368,22 @@ int create_ui(struct gropes_state *gs)
 	info_area.course_display = gtk_label_new(NULL);
 	gtk_label_set_use_markup(GTK_LABEL(info_area.course_display), TRUE);
 	gtk_label_set_markup(GTK_LABEL(info_area.course_display), 
-			     "<span size=\"xx-large\">0 deg</span>");
+			     "<span size=\"xx-large\">0&#0176;</span>");
+
+	info_area.pointer_loc_frame = gtk_frame_new("Pointer location");
+	info_area.pointer_loc_display = gtk_label_new(NULL);
+	gtk_label_set_use_markup(GTK_LABEL(info_area.pointer_loc_display), TRUE);
+	gtk_label_set_markup(GTK_LABEL(info_area.pointer_loc_display), 
+			     "<span size=\"x-large\">N\nE</span>");
 
 	gtk_container_add(GTK_CONTAINER(info_area.speed_frame), info_area.speed_display);
 	gtk_container_add(GTK_CONTAINER(info_area.location_frame), info_area.location_display);
 	gtk_container_add(GTK_CONTAINER(info_area.course_frame), info_area.course_display);
+	gtk_container_add(GTK_CONTAINER(info_area.pointer_loc_frame), info_area.pointer_loc_display);
 	gtk_container_add(GTK_CONTAINER(cmd_area), GTK_WIDGET(info_area.speed_frame));
 	gtk_container_add(GTK_CONTAINER(cmd_area), GTK_WIDGET(info_area.location_frame));
 	gtk_container_add(GTK_CONTAINER(cmd_area), GTK_WIDGET(info_area.course_frame));
+	gtk_container_add(GTK_CONTAINER(cmd_area), GTK_WIDGET(info_area.pointer_loc_frame));
 	gtk_paned_add1(GTK_PANED(map_and_cmd_area), cmd_area);
 
 	action_group = gtk_action_group_new("MenuActions");

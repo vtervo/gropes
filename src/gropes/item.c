@@ -52,12 +52,15 @@ void move_item(struct gropes_state *gs, struct map_state *ms,
 	GdkRectangle *area;
 
 	area = &item->area;
+
 	if (pos == NULL) {
 		/* If the position was already invalid, we don't have to
 		 * do anything */
 		if (!item->pos_valid)
 			return;
 		item->pos_valid = item->on_screen = 0;
+		if (item->update_info)
+			item->update_info(item);
 	} else {
 		GdkRectangle old_area;
 		int was_valid;
@@ -69,15 +72,18 @@ void move_item(struct gropes_state *gs, struct map_state *ms,
 		    item->pos_valid)
 			return;
 
-		if (item->update_info)
-			item->update_info(item);
 		was_valid = item->pos_valid;
 		item->pos_valid = 1;
 		item->pos = *pos;
 		old_area = *area;
+		if (item->update_info)
+			item->update_info(item);
 		pthread_mutex_lock(&ms->mutex);
 		calc_item_pos(gs, ms, item);
 		pthread_mutex_unlock(&ms->mutex);
+		/* Change map center if item is not on screen */
+		if (gs->opt_follow_gps && !item->on_screen)
+			change_map_center(gs, ms, &item->mpos, ms->scale);
 		/* Now area contains the new item area */
 		if (area->x == old_area.x && area->y == old_area.y &&
 		    area->height == old_area.height &&
@@ -86,6 +92,7 @@ void move_item(struct gropes_state *gs, struct map_state *ms,
 
 		if (gs->opt_follow_gps)
 			change_map_center(gs, ms, &item->mpos, ms->scale);
+
 		if (was_valid) {
 			/* Invalidate old area */
 			gtk_widget_queue_draw_area(ms->darea, old_area.x, old_area.y,
