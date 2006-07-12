@@ -186,6 +186,10 @@ PKG_CHECK_MODULES(PNG, libpng)
 AC_SUBST(PNG_CFLAGS)
 AC_SUBST(PNG_LIBS)
 
+dnl PKG_CHECK_MODULES(HILDON, hildon-libs)
+dnl AC_SUBST(HILDON_CFLAGS)
+dnl AC_SUBST(HILDON_LIBS)
+
 dnl Test for libjpeg
 if test -z "$LIBJPEG"; then
 	AC_CHECK_LIB(jpeg, jpeg_destroy_decompress, jpeg_ok=yes, AC_MSG_ERROR(*** libjpeg not found ***))

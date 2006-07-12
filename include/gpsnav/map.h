@@ -59,6 +59,9 @@ extern int gpsnav_get_map_pixels(struct gpsnav *gpsnav, struct gps_map *map,
 extern int gpsnav_get_provider_map_info(struct gpsnav *nav, struct gps_map *map,
 					struct gps_key_value **kv_out,
 					int *kv_count, const char *base_path);
+extern struct gps_map **gpsnav_find_maps(struct gpsnav *gpsnav,
+					 int (* check_map)(struct gps_map *map, void *arg),
+					 void *arg);
 extern struct gps_map **gpsnav_find_maps_for_coord(struct gpsnav *gpsnav,
 						   struct gps_coord *coord);
 extern struct gps_map **gpsnav_find_maps_for_area(struct gpsnav *gpsnav,

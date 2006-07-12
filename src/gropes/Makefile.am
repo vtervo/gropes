@@ -6,7 +6,7 @@ INCLUDES = @LIBGPSNAV_INCLUDES@ @LIBPROJ_INCLUDES@
 bin_PROGRAMS = gropes gropes-maptool
 
 gropes_CFLAGS = $(GTK_CFLAGS) $(PANGO_CFLAGS) $(GTHREAD_CFLAGS)
-gropes_SOURCES = gropes.c ui.c map.c item.c
+gropes_SOURCES = gropes.c ui.c map.c item.c ui_gtk.c
 gropes_LDADD = @LIBGPSNAV@ $(GTK_LIBS) $(PANGO_LIBS) $(GTHREAD_LIBS)
 
 gropes_maptool_CFLAGSADD = @LIBCURL_CPPFLAGS@
