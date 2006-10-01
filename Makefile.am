@@ -1,6 +1,6 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 
-SUBDIRS = . src m4 include
+SUBDIRS = . src m4 include data
 
 EXTRA_DIST = CodingStyle bootstrap
 
