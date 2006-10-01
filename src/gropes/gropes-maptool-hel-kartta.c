@@ -121,7 +121,6 @@ static int hel_kartta_download_map(CURL *curl, const struct hel_map *hmap,
 	curl_easy_reset(curl);
 	sprintf(url, "http://kartta2.hel.fi/?fif=%s&obj=hip,1.3&wid=%d&hei=%d&Fit=5&RGN=%.12f,%.12f,%.12E,%.12E&cvt=png",
 		hmap->url, width, height, x_per, y_per, width_per, height_per);
-	printf("%s\n", url);
 	printf("Downloading '%s'...\n", map_filename);
 	map_file = fopen(map_filename, "w");
 	if (map_file == NULL) {

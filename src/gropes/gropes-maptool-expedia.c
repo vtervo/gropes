@@ -68,15 +68,9 @@ static int expedia_download_map(CURL *curl, int alti,
 	char url[512];
 
 	curl_easy_reset(curl);
-#if 0
 	sprintf(url, "http://expedia.com/pub/agent.dll?qscr=mrdt&ID=3XNsF.&CenP=%.9lf,%.9lf&Lang=%s&Alti=%d&Size=%d,%d&Offs=0.000000,0.000000&BCheck&tpid=1",
 		center->la, center->lo, (center->lo > -30) ? "EUR0809" : "USA0409",
 		alti, width, height);
-#endif
-	sprintf(url, "http://www.expedia.com/pub/agent.dll?qscr=mrdt&ID=3XNsF.&CenP=%.9lf,%.9lf&Lang=%s&Alti=%d&Size=%d,%d&Offs=0.000000,0.000000&Pins=|35eb|",
-		center->la, center->lo, (center->lo > -30) ? "EUR0809" : "USA0409",
-		alti, width, height);
-
 	printf("%s\n", url);
 	printf("Downloading '%s'...\n", map_filename);
 	map_file = fopen(map_filename, "w");
@@ -86,14 +80,13 @@ static int expedia_download_map(CURL *curl, int alti,
 	}
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
-	curl_easy_setopt(curl, CURLOPT_MAXREDIRS, -1);
 	curl_easy_setopt(curl, CURLOPT_HEADER, 0);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, map_file);
 	ccode = curl_easy_perform(curl);
 	fclose(map_file);
 	if (ccode) {
-		fprintf(stderr, "Unable to download map '%s'\nCurl error %s\n", map_filename, curl_easy_strerror(ccode));
+		fprintf(stderr, "Unable to download map '%s'\n", map_filename);
 		return -1;
 	}
 

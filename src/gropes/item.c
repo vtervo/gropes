@@ -60,7 +60,7 @@ void move_item(struct gropes_state *gs, struct map_state *ms,
 			return;
 		item->pos_valid = item->on_screen = 0;
 		if (item->update_info)
-			item->update_info(ms, item);
+			item->update_info(item);
 	} else {
 		GdkRectangle old_area;
 		int was_valid;
@@ -77,7 +77,7 @@ void move_item(struct gropes_state *gs, struct map_state *ms,
 		item->pos = *pos;
 		old_area = *area;
 		if (item->update_info)
-			item->update_info(ms, item);
+			item->update_info(item);
 		pthread_mutex_lock(&ms->mutex);
 		calc_item_pos(gs, ms, item);
 		pthread_mutex_unlock(&ms->mutex);
