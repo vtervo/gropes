@@ -5,7 +5,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.52)
 
 AC_INIT(src/libgpsnav/gpsnav.c)
-AM_INIT_AUTOMAKE(gpsnav, 0.1.0)
+AM_INIT_AUTOMAKE(gpsnav, 0.2.0)
 AM_CONFIG_HEADER(config.h)
 
 AC_CONFIG_MACRO_DIR([m4])
@@ -52,6 +52,11 @@ AC_ARG_WITH(common-dir,
 			trycommondir=$withval
 		fi
 	]
+)
+
+AC_ARG_ENABLE(hildon,
+	[  --enable-hildon	Enable hildon widgets],
+	hildon=$enableval, hildon=no
 )
 
 saved_LDFLAGS="$LDFLAGS"
@@ -186,6 +191,34 @@ PKG_CHECK_MODULES(PNG, libpng)
 AC_SUBST(PNG_CFLAGS)
 AC_SUBST(PNG_LIBS)
 
+# Hildon library dependsncies
+if (test x$hildon = xyes); then
+	AC_DEFINE(USE_HILDON, 1, [Enable hildon widgets.])
+	PKG_CHECK_MODULES(HILDON, hildon-libs >= 0.9.50)
+	AC_SUBST(HILDON_LIBS)
+	AC_SUBST(HILDON_CFLAGS)
+
+	# Only used for the .service file path
+	PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= 0.23.4)
+
+	# OSSO application framework dependencies
+	PKG_CHECK_MODULES(OSSO, osso-af-settings >= 0.8.5 libosso >= 0.9.17 gnome-vfs-2.0 >= 2.8.4.11 gnome-vfs-module-2.0 >= 2.8.4.11)
+	AC_SUBST(OSSO_LIBS)
+	AC_SUBST(OSSO_CFLAGS)
+
+	# To make application visible in maemo Task Navigator it needs a Desktop
+	# file for the application.
+	# D-BUS service file is needed to be able to launch the maemo application
+	# and connect it to D-BUS services.
+	# The following line defines install directories for these files.
+	desktopentrydir=`$PKG_CONFIG osso-af-settings --variable=desktopentrydir`
+	serviceentrydir=`$PKG_CONFIG dbus-glib-1 --variable=libdir`/dbus-1.0/services
+
+	AC_SUBST(desktopentrydir)
+	AC_SUBST(serviceentrydir)
+fi
+AM_CONDITIONAL(USE_HILDON, test x$hildon = xyes)
+
 dnl Test for libjpeg
 if test -z "$LIBJPEG"; then
 	AC_CHECK_LIB(jpeg, jpeg_destroy_decompress, jpeg_ok=yes, AC_MSG_ERROR(*** libjpeg not found ***))
@@ -211,7 +244,10 @@ fi
 AC_SUBST(LIBGPS)
 
 dnl Test for libcurl
-LIBCURL_CHECK_CONFIG([yes],,[have_libcurl=yes])
+dnl LIBCURL_CHECK_CONFIG([yes],,[have_libcurl=yes],)
+PKG_CHECK_MODULES(CURL, libcurl)
+AC_SUBST(CURL_LIBS)
+AC_SUBST(CURL_CFLAGS)
 
 dnl Enable/disable debugging messages.
 AC_ARG_ENABLE(debug,
@@ -250,4 +286,5 @@ src/libgpsnav/proj4/Makefile
 src/gropes/Makefile
 include/Makefile
 include/gpsnav/Makefile
+data/Makefile
 ])
