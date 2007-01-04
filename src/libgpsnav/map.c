@@ -144,7 +144,7 @@ static int coord_in_map(struct gps_map *map, struct gps_coord *coord)
 	return within_rectangle(coord, &map->area.start, &map->area.end);
 }
 
-struct gps_map **gpsnav_find_maps(struct gpsnav *gpsnav,
+static struct gps_map **gpsnav_find_maps(struct gpsnav *gpsnav,
 					 int (* check_map)(struct gps_map *map, void *arg),
 					 void *arg)
 {

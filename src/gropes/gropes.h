@@ -6,12 +6,9 @@
 #include <gpsnav/map.h>
 #include <gpsnav/coord.h>
 #include <gpsnav/gpsnav.h>
-#include "ui.h"
 
 #define GROPES_MODE_TERRESTRIAL	0
 #define GROPES_MODE_NAUTICAL	1
-
-struct map_state;
 
 struct item_on_screen {
 	struct gps_coord pos;
@@ -20,7 +17,7 @@ struct item_on_screen {
 	double track;
 	double speed;
 	int pos_valid:1, on_screen:1;
-	void (* update_info)(struct map_state *, struct item_on_screen *);
+	void (* update_info)(struct item_on_screen *);
 };
 
 struct map_on_screen {
@@ -40,7 +37,6 @@ struct map_state {
 	struct map_on_screen *mos_list;
 	int width, height;
 	GtkWidget *darea;
-	struct ui_info_area info_area;
 
 	struct item_on_screen me;
 	pthread_mutex_t mutex;
@@ -54,9 +50,6 @@ struct gropes_state {
 	struct map_state big_map;
 	int opt_follow_gps:1, opt_draw_map_rectangles:1;
 	int mode;
-
-	struct gropes_mapcache_entry *mc_head, *mc_tail;
-	unsigned int mc_max_size, mc_cur_size;
 };
 
 char *fmt_coord(const struct gps_coord *coord, int fmt);

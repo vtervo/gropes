@@ -3,7 +3,6 @@
 #include <string.h>
 #include <assert.h>
 #include "gropes.h"
-#include "mapcache.h"
 
 static struct gps_map *find_best_map(struct gps_map *ref_map, struct gps_map **maps,
 				     const struct gps_marea *area, double scale)
@@ -374,13 +373,12 @@ static void destroy_pix_buf(guchar *pixels, gpointer data)
 		free(pb->data);
 }
 
-static void draw_single_map(GtkWidget *widget, struct gropes_state *gs,
+static void draw_single_map(GtkWidget *widget, struct gpsnav *nav,
 			    struct map_on_screen *mos, const GdkRectangle *isect)
 {
 	struct gps_pixel_buf pb_need, pb_got;
 	GdkPixbuf *map_pb;
 
-	printf("%s %d\n", __FUNCTION__, __LINE__);
 	memset(&pb_need, 0, sizeof(pb_need));
 	pb_need.x = mos->map_area.x + (isect->x - mos->draw_area.x);
 	pb_need.y = mos->map_area.y + (isect->y - mos->draw_area.y);
@@ -390,14 +388,12 @@ static void draw_single_map(GtkWidget *widget, struct gropes_state *gs,
 	pb_need.row_stride = pb_need.width * 3;
 	pb_got = pb_need;
 
-	printf("%s %d\n", __FUNCTION__, __LINE__);
-	if (gpsnav_get_map_pixels(gs->nav, mos->map, &pb_got) < 0) {
+	if (gpsnav_get_map_pixels(nav, mos->map, &pb_got) < 0) {
 		fprintf(stderr, "gpsnav_get_map_pixels() failed\n");
 		grey_fill(widget, isect);
 		return;
 	}
 
-	printf("%s %d\n", __FUNCTION__, __LINE__);
 	map_pb = gdk_pixbuf_new_from_data(pb_got.data, GDK_COLORSPACE_RGB, FALSE, 8,
 					  pb_got.width, pb_got.height, pb_got.row_stride,
 					  destroy_pix_buf, &pb_got);
@@ -405,7 +401,6 @@ static void draw_single_map(GtkWidget *widget, struct gropes_state *gs,
 		grey_fill(widget, isect);
 		return;
 	}
-	printf("%s %d\n", __FUNCTION__, __LINE__);
 	gdk_draw_pixbuf(widget->window, widget->style->fg_gc[GTK_STATE_NORMAL],
 			map_pb, pb_need.x - pb_got.x, pb_need.y - pb_got.y,
 			isect->x, isect->y, isect->width, isect->height,
@@ -413,14 +408,12 @@ static void draw_single_map(GtkWidget *widget, struct gropes_state *gs,
 	g_object_unref(map_pb);
 }
 
-static void draw_single_map_scaled(GtkWidget *widget, struct gropes_state *gs,
+static void draw_single_map_scaled(GtkWidget *widget, struct gpsnav *nav,
 				   struct map_on_screen *mos, GdkRectangle *isect)
 {
 	struct gps_pixel_buf pb;
 	GdkPixbuf *map_pb, *sub_pb, *scaled_pb;
-	double scale;
 
-	printf("%s %d\n", __FUNCTION__, __LINE__);
 	memset(&pb, 0, sizeof(pb));
 	pb.x = mos->map_area.x;
 	pb.y = mos->map_area.y;
@@ -429,41 +422,25 @@ static void draw_single_map_scaled(GtkWidget *widget, struct gropes_state *gs,
 	pb.bpp = 24;
 	pb.row_stride = pb.width * 3;
 
-	sub_pb = NULL;
-	scale = mos->draw_area.width / mos->map_area.width;
-	printf("%s %d\n", __FUNCTION__, __LINE__);
-	sub_pb = gropes_mapcache_get(gs, mos->map, &pb, scale);
-	printf("%s %d\n", __FUNCTION__, __LINE__);
-
-	if (sub_pb) {
-		scaled_pb = gdk_pixbuf_new_subpixbuf(sub_pb,
-				mos->draw_area.x - pb.x * scale,
-				mos->draw_area.y - pb.y * scale,
-				mos->draw_area.width,
-				mos->draw_area.height);
-		g_object_unref(sub_pb);
-	} else {
-		if (gpsnav_get_map_pixels(gs->nav, mos->map, &pb) < 0) {
-			fprintf(stderr, "gpsnav_get_map_pixels() failed\n");
-			goto fail;
-		}
-
-		map_pb = gdk_pixbuf_new_from_data(pb.data, GDK_COLORSPACE_RGB, FALSE, 8,
-				pb.width, pb.height, pb.row_stride,
-				destroy_pix_buf, &pb);
-		if (map_pb == NULL)
-			goto fail;
-		sub_pb = gdk_pixbuf_new_subpixbuf(map_pb, mos->map_area.x - pb.x,
-				mos->map_area.y - pb.y,
-				mos->map_area.width,
-				mos->map_area.height);
-		g_object_unref(map_pb);
-		scaled_pb = gdk_pixbuf_scale_simple(sub_pb, mos->draw_area.width,
-				mos->draw_area.height,
-				GDK_INTERP_BILINEAR);
-		gropes_mapcache_add(gs, mos->map, scaled_pb, scale);
-		g_object_unref(sub_pb);
+	if (gpsnav_get_map_pixels(nav, mos->map, &pb) < 0) {
+		fprintf(stderr, "gpsnav_get_map_pixels() failed\n");
+		goto fail;
 	}
+
+	map_pb = gdk_pixbuf_new_from_data(pb.data, GDK_COLORSPACE_RGB, FALSE, 8,
+					  pb.width, pb.height, pb.row_stride,
+					  destroy_pix_buf, &pb);
+	if (map_pb == NULL)
+		goto fail;
+	sub_pb = gdk_pixbuf_new_subpixbuf(map_pb, mos->map_area.x - pb.x,
+					  mos->map_area.y - pb.y,
+					  mos->map_area.width,
+					  mos->map_area.height);
+	g_object_unref(map_pb);
+	scaled_pb = gdk_pixbuf_scale_simple(sub_pb, mos->draw_area.width,
+					    mos->draw_area.height,
+					    GDK_INTERP_BILINEAR);
+	g_object_unref(sub_pb);
 	if (scaled_pb == NULL)
 		goto fail;
 	gdk_draw_pixbuf(widget->window, widget->style->fg_gc[GTK_STATE_NORMAL],
@@ -503,12 +480,11 @@ void draw_maps(struct gropes_state *state, GtkWidget *widget,
 			continue;
 		}
 
-		printf("%s %d\n", __FUNCTION__, __LINE__);
 		if (mos->map_area.height != mos->draw_area.height ||
 		    mos->map_area.width != mos->draw_area.width) {
-			draw_single_map_scaled(widget, state, mos, &isect);
+			draw_single_map_scaled(widget, state->nav, mos, &isect);
 		} else
-			draw_single_map(widget, state, mos, &isect);
+			draw_single_map(widget, state->nav, mos, &isect);
 
 		if (state->opt_draw_map_rectangles)
 			gdk_draw_rectangle(widget->window, gc, FALSE, mos->draw_area.x,

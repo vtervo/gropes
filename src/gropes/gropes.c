@@ -304,45 +304,23 @@ int main(int argc, char *argv[])
 
 	memset(&gropes_state, 0, sizeof(gropes_state));
 
-	if ((r = gpsnav_init(&nav)) < 0) {
-		printf("gpsnav_init failed %d\n", r);
-		return r;
-	}
-
+	if (gpsnav_init(&nav) < 0)
+		return 1;
 	gropes_state.nav = nav;
 
 	gpsnav_set_update_callback(nav, update_cb, &gropes_state);
 
 	/* Pixel cache of 10 MB by default */
-	nav->pc_max_size = 1 * 1024 * 1024;
-	gropes_state.mc_max_size = 10 * 1024 * 1024;
+	nav->pc_max_size = 500 * 1024 * 1024;
 
-	r = chdir("/media/mmc1/meri-mmc");
-	if (r < 0) {
-		printf("chdir failed %d\n", r);
-		return r;
-	}
 	r = gpsnav_mapdb_read(nav, "mapdb.xml");
-	if (r < 0) {
-		printf("map_db failed %d\n", r);
-		return r;
-	}
+	if (r < 0)
+		return 1;
 
 	pthread_mutex_init(&gropes_state.big_map.mutex, NULL);
 
 	scale = 0;
-
-	maps = gpsnav_find_maps(nav, NULL, NULL);
-	if (maps == NULL) {
-		printf("No maps found.\n");
-		return -1;
-	}
-	center_pos.la = (maps[0]->area.start.la +
-			maps[0]->area.end.la) / 2;
-	center_pos.lo = (maps[0]->area.start.lo +
-			maps[0]->area.end.lo) / 2;
-
-#if 0
+#if 1
 	/* Munkkiniemen silta */
 	center_pos.la = 60.195666667;
 	center_pos.lo = 24.887666667;
@@ -381,8 +359,7 @@ int main(int argc, char *argv[])
 	gropes_state.big_map.ref_map = ref_map;
 	change_map_center(&gropes_state, &gropes_state.big_map, &center_mpos, scale);
 
-	create_hildon_ui(&gropes_state);
-//	create_ui(&gropes_state);
+	create_ui(&gropes_state);
 
 	gdk_threads_enter();
 	gtk_main();
