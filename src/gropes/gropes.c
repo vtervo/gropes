@@ -19,6 +19,7 @@
 #include <gps.h>
 
 #include "gropes.h"
+#include "config.h"
 
 struct gropes_state gropes_state;
 
