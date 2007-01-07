@@ -10,9 +10,9 @@ gropes_SOURCES = gropes.c ui.c map.c item.c
 gropes_LDADD = @LIBGPSNAV@ $(GTK_LIBS) $(PANGO_LIBS) $(GTHREAD_LIBS)
 
 if USE_HILDON
-gropes_CFLAGS += $(HILDON_CFLAGS)
+gropes_CFLAGS += $(HILDON_CFLAGS) $(DBUS_CFLAGS) $(OSSO_CFLAGS)
 gropes_SOURCES += ui_hildon.c
-gropes_LDADD += $(HILDON_LIBS)
+gropes_LDADD += $(HILDON_LIBS) $(DBUS_LIBS) $(OSSO_LIBS)
 else
 gropes_SOURCES += ui_gtk.c
 endif
