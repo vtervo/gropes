@@ -12,7 +12,7 @@ static void update_infoarea(struct map_state *ms, struct item_on_screen *item)
 	char *location_color;
 	char location[128];
 	char *speed;
-	char course[64];
+	char course[128];
 	char *pos;
 
 	if (item->pos_valid)

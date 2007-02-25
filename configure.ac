@@ -54,11 +54,6 @@ AC_ARG_WITH(common-dir,
 	]
 )
 
-AC_ARG_ENABLE(hildon,
-	[  --enable-hildon	Enable hildon widgets],
-	hildon=$enableval, hildon=no
-)
-
 saved_LDFLAGS="$LDFLAGS"
 saved_CPPFLAGS="$CPPFLAGS"
 AC_CACHE_CHECK([for common directory], ac_cv_commondir, [
@@ -191,8 +186,10 @@ PKG_CHECK_MODULES(PNG, libpng)
 AC_SUBST(PNG_CFLAGS)
 AC_SUBST(PNG_LIBS)
 
+PKG_CHECK_MODULES(HILDON, hildon-libs >= 0.9.50, has_hildon=true, has_hildon=false)
+
 # Hildon library dependsncies
-if (test x$hildon = xyes); then
+if (test x$has_hildon = xtrue); then
 	AC_DEFINE(USE_HILDON, 1, [Enable hildon widgets.])
 	PKG_CHECK_MODULES(HILDON, hildon-libs >= 0.9.50)
 	AC_SUBST(HILDON_LIBS)
@@ -217,7 +214,7 @@ if (test x$hildon = xyes); then
 	AC_SUBST(desktopentrydir)
 	AC_SUBST(serviceentrydir)
 fi
-AM_CONDITIONAL(USE_HILDON, test x$hildon = xyes)
+AM_CONDITIONAL(USE_HILDON, test x$has_hildon = xtrue)
 
 dnl Test for libjpeg
 if test -z "$LIBJPEG"; then
@@ -237,8 +234,8 @@ AC_SUBST(LIBGIF)
 
 dnl Test for libgps
 if test -z "$LIBGPS"; then
-	AC_CHECK_LIB(gps, gps_open, , AC_MSG_ERROR(*** libgps not found ***))
-	AC_CHECK_HEADER(gps.h, , AC_MSG_ERROR(*** gps.h not found ***))
+dnl 	AC_CHECK_LIB(gps, gps_open, , AC_MSG_ERROR(*** libgps not found ***))
+dnl 	AC_CHECK_HEADER(gps.h, , AC_MSG_ERROR(*** gps.h not found ***))
 	LIBGPS="-lgps"
 fi
 AC_SUBST(LIBGPS)

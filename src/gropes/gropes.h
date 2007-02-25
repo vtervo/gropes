@@ -75,7 +75,7 @@ void move_item(struct gropes_state *gs, struct map_state *ms,
 void calc_item_pos(struct gropes_state *gs, struct map_state *ms,
 		   struct item_on_screen *item);
 
-int create_ui(struct gropes_state *gs);
+int create_gtk_ui(struct gropes_state *gs);
 int create_hildon_ui(struct gropes_state *gs);
 int show_maptool_ui(struct gropes_state *gs);
 
