@@ -14,13 +14,15 @@ enum {
 	OPT_DL_KARTTA_HEL_MAPS,
 	OPT_DL_OIKOTIE_MAPS,
 	OPT_DL_EXPEDIA_MAPS,
+	OPT_DL_KARTTAPAIKKA_MAPS
 };
 
 enum {
-	CMD_ADD_MERICD_MAPS = 1 << 1,
-	CMD_DL_KARTTA_HEL_MAPS = 1 << 2,
-	CMD_DL_OIKOTIE_MAPS = 1 << 3,
-	CMD_DL_EXPEDIA_MAPS = 1 << 4,
+	CMD_ADD_MERICD_MAPS = 0,
+	CMD_DL_KARTTA_HEL_MAPS,
+	CMD_DL_OIKOTIE_MAPS,
+	CMD_DL_EXPEDIA_MAPS,
+	CMD_DL_KARTTAPAIKKA_MAPS
 };
 
 static const struct option options[] = {
@@ -28,6 +30,7 @@ static const struct option options[] = {
 	{ "download-hel-maps",	2, 0, OPT_DL_KARTTA_HEL_MAPS },
 	{ "download-oikotie-maps",2,0,OPT_DL_OIKOTIE_MAPS },
 	{ "download-expedia-maps",2,0,OPT_DL_EXPEDIA_MAPS },
+	{ "download-karttapaikka-maps",2,0,OPT_DL_KARTTAPAIKKA_MAPS },
 	{ "map-db-file",	1, 0, 'f' },
 	{ "overwrite",		0, 0, 'o' },
 	{ "start-coord",	1, 0, 's' },
@@ -42,6 +45,7 @@ static const char *option_help[] = {
 	"Download maps from kartta.hel.fi",
         "Download maps from Oikotie",
 	"Download maps from expedia.com",
+	"Download maps from kansalaisen.karttapaikka.com",
 	"Map database filename",
 	"Overwrite existing map database",
 	"Start (bottom left) coordinate",
@@ -96,6 +100,8 @@ extern int oikotie_dl(struct gpsnav *nav, struct gps_coord *start,
 		      struct gps_coord *end, const char *map);
 extern int expedia_dl(struct gpsnav *nav, struct gps_coord *start,
 		      struct gps_coord *end, const char *scale);
+extern int karttapaikka_dl(struct gpsnav *nav, struct gps_coord *start,
+		      struct gps_coord *end, const char *scale);
 
 static const char *mapdb_file = "mapdb.xml";
 
@@ -107,6 +113,7 @@ int main(int argc, char *argv[])
 	const char *hel_map = NULL;
 	const char *oikotie_map = NULL;
 	const char *expedia_scale = NULL;
+	const char *karttapaikka_map = NULL;
 	int overwrite = 0;
 	struct gps_coord start, end;
 	struct gpsnav *nav;
@@ -135,6 +142,10 @@ int main(int argc, char *argv[])
 		case OPT_DL_EXPEDIA_MAPS:
 			flags |= (1 << CMD_DL_EXPEDIA_MAPS);
 			expedia_scale = optarg;
+			break;
+		case OPT_DL_KARTTAPAIKKA_MAPS:
+			flags |= (1 << CMD_DL_KARTTAPAIKKA_MAPS);
+			karttapaikka_map = optarg;
 			break;
 		case 'f':
 			mapdb_file = optarg;
@@ -188,6 +199,10 @@ int main(int argc, char *argv[])
 
 	if (flags & (1 << CMD_DL_EXPEDIA_MAPS)) {
 		if (expedia_dl(nav, &start, &end, expedia_scale) < 0)
+			goto err;
+	}
+	if (flags & (1 << CMD_DL_KARTTAPAIKKA_MAPS)) {
+		if (karttapaikka_dl(nav, &start, &end, karttapaikka_map) < 0)
 			goto err;
 	}
 

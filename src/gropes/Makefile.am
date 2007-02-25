@@ -19,7 +19,8 @@ endif
 
 gropes_maptool_CFLAGSADD = $(CURL_CFLAGS)
 gropes_maptool_SOURCES = gropes-maptool.c gropes-maptool-hel-kartta.c \
-			 gropes-maptool-oikotie.c gropes-maptool-expedia.c
+			 gropes-maptool-oikotie.c gropes-maptool-expedia.c \
+			 gropes-maptool-karttapaikka.c
 gropes_maptool_LDADD = @LIBGPSNAV@ $(CURL_LIBS)
 
 noinst_HEADERS = gropes.h
