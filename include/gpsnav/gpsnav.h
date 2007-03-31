@@ -44,7 +44,7 @@ extern int gpsnav_connect(struct gpsnav *nav);
 extern void gpsnav_disconnect(struct gpsnav *nav);
 extern void gpsnav_finish(struct gpsnav *nav);
 extern void gpsnav_set_update_callback(struct gpsnav *nav,
-				       void (* update_cb)(void *, const struct gps_fix_t *),
+				       void (* update_cb)(void *, const struct gps_data_t *),
 				       void *data);
 
 extern struct gps_map_provider *gpsnav_find_provider(struct gpsnav *gpsnav, const char *name);

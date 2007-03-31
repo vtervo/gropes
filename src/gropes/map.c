@@ -224,8 +224,8 @@ static void print_area(const char *name, const struct gps_marea *ma,
 
 	fmt_mcoord(&ma->start, ss);
 	fmt_mcoord(&ma->end, se);
-	printf("%s %s --> %s  %4d, %4d --> %4d, %4d\n",
-	       name, ss, se, a->x, a->y, a->x + a->width, a->y + a->height);
+//	printf("%s %s --> %s  %4d, %4d --> %4d, %4d\n",
+//	       name, ss, se, a->x, a->y, a->x + a->width, a->y + a->height);
 }
 
 static int generate_map_layout(struct gpsnav *nav, struct gps_map *ref_map,
@@ -266,14 +266,14 @@ static int generate_map_layout(struct gpsnav *nav, struct gps_map *ref_map,
 	calc_xy_for_metric(map, screen_area, scale, &marea, &isect, &map_area,
 			   &map_draw_area);
 
-	print_area("map  ", &map->marea, &map_area);
-	print_area("isect", &isect, &map_draw_area);
-	{
-		char *fname = get_map_fname(nav, map);
+//	print_area("map  ", &map->marea, &map_area);
+//	print_area("isect", &isect, &map_draw_area);
+//	{
+//		char *fname = get_map_fname(nav, map);
 
-		printf("%s\n", fname);
-		free(fname);
-	}
+//		printf("%s\n", fname);
+//		free(fname);
+//	}
 
 	assert(map_area.x >= 0 && map_area.y >= 0);
 	assert(map_area.x + map_area.width <= map->width);
@@ -290,11 +290,13 @@ static int generate_map_layout(struct gpsnav *nav, struct gps_map *ref_map,
 		/* Map fills the whole area. Yay! */
 		return add_mos_entry(head, map, &map_area, screen_area);
 	}
+#if 0
 	printf("comp_res: %c%c%c%c\n",
 	       comp_res & FILL_UP ? 'U' : ' ',
 	       comp_res & FILL_DOWN ? 'D' : ' ',
 	       comp_res & FILL_LEFT ? 'L' : ' ',
 	       comp_res & FILL_RIGHT ? 'R' : ' ');
+#endif
 
 	r = add_mos_entry(head, map, &map_area, &map_draw_area);
 	if (r)
@@ -307,7 +309,7 @@ static int generate_map_layout(struct gpsnav *nav, struct gps_map *ref_map,
 
 		new_area = *screen_area;
 		new_area.height = map_draw_area.y - screen_area->y;
-		printf("Drawing upper\n");
+//		printf("Drawing upper\n");
 		r = generate_map_layout(nav, ref_map, maps, zero_area,
 					zero_marea, scale, &new_area,
 					head, depth);
@@ -322,7 +324,7 @@ static int generate_map_layout(struct gpsnav *nav, struct gps_map *ref_map,
 		new_area.width = screen_area->width;
 		new_area.y = map_draw_area.y + map_draw_area.height;
 		new_area.height = screen_area->y + screen_area->height - new_area.y;
-		printf("Drawing lower\n");
+//		printf("Drawing lower\n");
 		r = generate_map_layout(nav, ref_map, maps, zero_area,
 					zero_marea, scale, &new_area,
 					head, depth);
@@ -337,7 +339,7 @@ static int generate_map_layout(struct gpsnav *nav, struct gps_map *ref_map,
 		new_area.width = map_draw_area.x - screen_area->x;
 		new_area.y = map_draw_area.y;
 		new_area.height = map_draw_area.height;
-		printf("Drawing left\n");
+//		printf("Drawing left\n");
 		r = generate_map_layout(nav, ref_map, maps, zero_area,
 					zero_marea, scale, &new_area, head,
 					depth);
@@ -352,7 +354,7 @@ static int generate_map_layout(struct gpsnav *nav, struct gps_map *ref_map,
 		new_area.width = screen_area->x + screen_area->width - new_area.x;
 		new_area.y = map_draw_area.y;
 		new_area.height = map_draw_area.height;
-		printf("Drawing right\n");
+//		printf("Drawing right\n");
 		r = generate_map_layout(nav, ref_map, maps, zero_area,
 					zero_marea, scale, &new_area, head,
 					depth);
@@ -570,6 +572,7 @@ void change_map_center(struct gropes_state *gs, struct map_state *ms,
 	ms->center_mpos = *cent;
 	gpsnav_get_coord_for_metric(ms->ref_map, cent, &ms->center_pos);
 
+#if 0
 	{
 		char *coord;
 
@@ -585,6 +588,7 @@ void change_map_center(struct gropes_state *gs, struct map_state *ms,
 
 		printf("Scale %f\n", ms->scale);
 	}
+#endif
 
 	width = ms->width;
 	height = ms->height;
@@ -607,15 +611,18 @@ void change_map_center(struct gropes_state *gs, struct map_state *ms,
 	maps = gpsnav_find_maps_for_marea(gs->nav, ms->ref_map, marea);
 	if (maps == NULL) {
 		/* FIXME: Try to find a new ref map for latlong area */
-		printf("No maps found!\n");
+//		printf("No maps found!\n");
 		goto ret;
 	}
+
+#if 0
 	{
 		int i;
 
 		for (i = 0; maps[i] != NULL; i++);
 		printf("%d map(s) found for area\n", i);
 	}
+#endif
 
 	draw_area.x = draw_area.y = 0;
 	draw_area.width = width;
@@ -643,15 +650,20 @@ void change_map_center(struct gropes_state *gs, struct map_state *ms,
 			if (sa->width != ma->width ||
 			    sa->height != ma->height)
 				rescale = 1;
+#if 0
 			printf("Map   %4d, %4d (%4d, %4d)  %cM %4d, %4d (%4d, %4d): %s\n",
 			       sa->x, sa->y, sa->width, sa->height,
 			       rescale ? 'S' : ' ', ma->x, ma->y,
 			       ma->width, ma->height, fname);
+#endif
 			free(fname);
-		} else {
+		}
+#if 0
+		else {
 			printf("Blank %4d, %4d (%4d, %4d)\n", sa->x, sa->y,
 			       sa->width, sa->height);
 		}
+#endif
 	}
 	gtk_widget_queue_draw_area(ms->darea, 0, 0,
 				   ms->darea->allocation.width,

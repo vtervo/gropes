@@ -33,6 +33,10 @@ struct gps_datum {
 	uint16_t dx, dy, dz;
 };
 
+struct gps_speed {
+	double speed;
+	double track;
+};
 
 
 extern void gpsnav_get_metric_for_coord(struct gps_map *map,

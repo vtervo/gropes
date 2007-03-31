@@ -21,11 +21,11 @@ static void gps_callback(struct gps_data_t *sentence, char *buf, size_t len,
 	nav = lame_gpsnav_pointer;
 
 	if (nav->update_cb != NULL)
-		nav->update_cb(nav->update_cb_data, &sentence->fix);
+		nav->update_cb(nav->update_cb_data, sentence);
 }
 
 void gpsnav_set_update_callback(struct gpsnav *nav,
-				void (* update_cb)(void *, const struct gps_fix_t *),
+				void (* update_cb)(void *, const struct gps_data_t *),
 				void *data)
 {
 	nav->update_cb = update_cb;

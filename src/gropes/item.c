@@ -47,7 +47,8 @@ void calc_item_pos(struct gropes_state *gs, struct map_state *ms,
 }
 
 void move_item(struct gropes_state *gs, struct map_state *ms,
-	       struct item_on_screen *item, const struct gps_coord *pos)
+	       struct item_on_screen *item, const struct gps_coord *pos,
+	       struct gps_speed *speed)
 {
 	GdkRectangle *area;
 
@@ -56,8 +57,6 @@ void move_item(struct gropes_state *gs, struct map_state *ms,
 	if (pos == NULL) {
 		/* If the position was already invalid, we don't have to
 		 * do anything */
-		if (!item->pos_valid)
-			return;
 		item->pos_valid = item->on_screen = 0;
 		if (item->update_info)
 			item->update_info(ms, item);
@@ -69,12 +68,15 @@ void move_item(struct gropes_state *gs, struct map_state *ms,
 		 * do anything */
 		if (pos->la == item->pos.la &&
 		    pos->lo == item->pos.lo &&
+		    speed->speed == item->speed.speed &&
+		    speed->track == item->speed.track &&
 		    item->pos_valid)
 			return;
 
 		was_valid = item->pos_valid;
 		item->pos_valid = 1;
 		item->pos = *pos;
+		item->speed = *speed;
 		old_area = *area;
 		if (item->update_info)
 			item->update_info(ms, item);

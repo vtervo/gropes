@@ -16,9 +16,8 @@ struct map_state;
 struct item_on_screen {
 	struct gps_coord pos;
 	struct gps_mcoord mpos;
+	struct gps_speed speed;
 	GdkRectangle area;
-	double track;
-	double speed;
 	int pos_valid:1, on_screen:1;
 	void (* update_info)(struct map_state *, struct item_on_screen *);
 };
@@ -71,7 +70,8 @@ void draw_maps(struct gropes_state *state, GtkWidget *widget,
 	       struct map_on_screen *mos_list, const GdkRectangle *area);
 
 void move_item(struct gropes_state *gs, struct map_state *ms,
-	       struct item_on_screen *item, const struct gps_coord *pos);
+	       struct item_on_screen *item, const struct gps_coord *pos,
+	       struct gps_speed *speed);
 void calc_item_pos(struct gropes_state *gs, struct map_state *ms,
 		   struct item_on_screen *item);
 

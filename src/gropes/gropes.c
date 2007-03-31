@@ -141,8 +141,8 @@ static void draw_vehicle(struct gpsnav *nav, struct map_state *state)
 	color.pixel = 0x0000ff;
 	area = &state->me.area;
 	gdk_gc_set_foreground(gc, &color);
-	printf("vehicle %d, %d (%d, %d)\n", area->x, area->y,
-	       area->width, area->height);
+//	printf("vehicle %d, %d (%d, %d)\n", area->x, area->y,
+//	       area->width, area->height);
 	gdk_draw_arc(state->darea->window, gc, TRUE, area->x, area->y,
 		     area->width, area->height, 0, 360*64);
 	g_object_unref(gc);
@@ -154,8 +154,8 @@ void redraw_map_area(struct gropes_state *state, struct map_state *ms,
 	GdkColor blue, black;
 	GdkRectangle tmp;
 
-	printf("Redraw request for %d:%d->%d:%d\n", area->x, area->y,
-	       area->x + area->width, area->y + area->height);
+//	printf("Redraw request for %d:%d->%d:%d\n", area->x, area->y,
+//	       area->x + area->width, area->y + area->height);
 	blue.red = 0;
 	blue.green = 0;
 	blue.blue = 0xffff;
@@ -261,30 +261,44 @@ void gropes_shutdown(void)
 	gtk_main_quit();
 }
 
-static void update_cb(void *arg, const struct gps_fix_t *fix)
+static void update_cb(void *arg, const struct gps_data_t *sen)
 {
 	struct gropes_state *gs = arg;
 	struct map_state *ms = &gs->big_map;
 	struct item_on_screen *item;
+	struct gps_fix_t *fix;
 
+	fix = &sen->fix;
 	item = &ms->me;
-	if (fix->mode == MODE_NOT_SEEN) {
-		printf("No GPS fix\n");
+	if (sen->status == STATUS_NO_FIX) {
 		if (!item->pos_valid)
 			return;
 		item->pos_valid = item->on_screen = 0;
 		gdk_threads_enter();
-		move_item(gs, ms, item, NULL);
+		move_item(gs, ms, item, NULL, NULL);
 		gdk_threads_leave();
 	} else {
 		struct gps_coord pos;
+		struct gps_speed speed;
 
-		pos.la = fix->latitude;
-		pos.lo = fix->longitude;
+//		printf("s %lf, t %lf, lat %lf, lon %lf\n", fix->speed, fix->track, fix->latitude, fix->longitude);
+		if (!(isnan(fix->latitude) || isnan(fix->longitude))) {
+			pos.la = fix->latitude;
+			pos.lo = fix->longitude;
+		} else {
+			pos.la = item->pos.la;
+			pos.lo = item->pos.lo;
+		}
+
+		if (!(isnan(fix->speed) || isnan(fix->track))) {
+			speed.speed = fix->speed * MPS_TO_KNOTS;
+			speed.track = fix->track;
+		} else {
+			speed.speed = item->speed.speed;
+			speed.track = item->speed.track;
+		}
 		gdk_threads_enter();
-		item->speed = fix->speed * MPS_TO_KNOTS;
-		item->track = fix->track;
-		move_item(gs, ms, item, &pos);
+		move_item(gs, ms, item, &pos, &speed);
 		gdk_threads_leave();
 	}
 }

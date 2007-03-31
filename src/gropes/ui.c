@@ -56,7 +56,7 @@ gboolean on_darea_clicked(GtkWidget *widget,
 
 	diff_x = event->x - widget->allocation.width / 2;
 	diff_y = event->y - widget->allocation.height / 2;
-	printf("Click %dx%d!\n", diff_x, diff_y);
+//	printf("Click %dx%d!\n", diff_x, diff_y);
 
 	new_scale = map_state->scale;
 	if (event->button == 2)
@@ -104,8 +104,8 @@ gboolean on_darea_expose(GtkWidget *widget,
 	struct map_state *ms = user_data;
 	GdkRectangle *expose_area = &event->area;
 
-	printf("expose %d:%d (%d:%d)\n", expose_area->x, expose_area->y,
-	       expose_area->width, expose_area->height);
+//	printf("expose %d:%d (%d:%d)\n", expose_area->x, expose_area->y,
+//	       expose_area->width, expose_area->height);
 	redraw_map_area(&gropes_state, ms, widget, expose_area);
 
 	return TRUE;
@@ -117,8 +117,8 @@ gboolean on_darea_configure(GtkWidget *widget,
 {
 	struct map_state *ms = user_data;
 
-	printf("configure %d:%d (%d:%d)\n", event->x, event->y,
-	       event->width, event->height);
+//	printf("configure %d:%d (%d:%d)\n", event->x, event->y,
+//	       event->width, event->height);
 	if (event->width != ms->width ||
 	    event->height != ms->height) {
 		ms->width = event->width;
@@ -135,12 +135,12 @@ void on_mode_change(GtkRadioAction *action, GtkRadioAction *current,
 	int new_mode;
 
 	new_mode = gtk_radio_action_get_current_value(action);
-	printf("new mode %d\n", new_mode);
+//	printf("new mode %d\n", new_mode);
 }
 
 void on_fullscreen(GtkAction *action, struct gropes_state *gs)
 {
-	printf("Full screen\n");
+//	printf("Full screen\n");
 }
 
 void on_zoom_in(GtkAction *action, struct gropes_state *gs)
@@ -148,7 +148,7 @@ void on_zoom_in(GtkAction *action, struct gropes_state *gs)
 	struct map_state *ms;
 
 	ms = &gs->big_map;
-	printf("Zooming in\n");
+//	printf("Zooming in\n");
 	change_map_center(gs, ms, &ms->center_mpos, ms->scale / 1.5);
 }
 
@@ -157,7 +157,7 @@ void on_zoom_out(GtkAction *action, struct gropes_state *gs)
 	struct map_state *ms;
 
 	ms = &gs->big_map;
-	printf("Zooming out\n");
+//	printf("Zooming out\n");
 	change_map_center(gs, ms, &ms->center_mpos, ms->scale * 1.5);
 }
 
@@ -181,7 +181,7 @@ void on_gps_connect(GtkAction *action, struct gropes_state *gs)
 {
 	GtkAction *other_act;
 
-	printf("Connecting\n");
+//	printf("Connecting\n");
 	if (gpsnav_connect(gs->nav) < 0)
                 return;
 	other_act = gtk_ui_manager_get_action(gs->ui_manager, "ui/MainMenu/GPSMenu/GPSDisconnect");
@@ -193,9 +193,9 @@ void on_gps_disconnect(GtkAction *action, struct gropes_state *gs)
 {
 	GtkAction *other_act;
 
-	printf("Disconnecting\n");
+//	printf("Disconnecting\n");
 	gpsnav_disconnect(gs->nav);
-	move_item(gs, &gs->big_map, &gs->big_map.me, NULL);
+	move_item(gs, &gs->big_map, &gs->big_map.me, NULL, NULL);
 	other_act = gtk_ui_manager_get_action(gs->ui_manager, "ui/MainMenu/GPSMenu/GPSConnect");
 	gtk_action_set_sensitive(action, FALSE);
 	gtk_action_set_sensitive(other_act, TRUE);
@@ -205,7 +205,7 @@ void on_gps_follow(GtkToggleAction *action, struct gropes_state *gs)
 {
 	struct map_state *ms = &gs->big_map;
 
-	printf("Setting follow mode to %d\n", gtk_toggle_action_get_active(action));
+//	printf("Setting follow mode to %d\n", gtk_toggle_action_get_active(action));
 	gs->opt_follow_gps = gtk_toggle_action_get_active(action);
 	if (ms->me.pos_valid)
 		change_map_center(gs, ms, &ms->me.mpos, ms->scale);
