@@ -16,15 +16,15 @@ static void update_infoarea(struct map_state *ms, struct item_on_screen *item)
 	char *pos;
 
 	if (item->pos_valid)
-		location_color = g_markup_printf_escaped("grey");
+		location_color = "";
 	else
-		location_color = g_markup_printf_escaped("red");
+		location_color = g_markup_printf_escaped(" background=\"red\"");
 
 	pos = fmt_location(&item->pos);
-	snprintf(location, sizeof(location), "<span size=\"large\" background=\"%s\">%s</span>",
+	snprintf(location, sizeof(location), "<span size=\"large\"%s>%s</span>",
 					   location_color, pos);
-	speed = g_markup_printf_escaped("<span size=\"large\">%.1f kt</span>", item->speed);
-	snprintf(course, sizeof(course), "<span size=\"large\">%.1f&#0176;</span>", item->track);
+	speed = g_markup_printf_escaped("<span size=\"large\">%.1f kt</span>", item->speed.speed);
+	snprintf(course, sizeof(course), "<span size=\"large\">%.1f&#0176;</span>", item->speed.track);
 
 	gtk_label_set_markup(GTK_LABEL(ms->info_area.location_display), location);
 	gtk_label_set_markup(GTK_LABEL(ms->info_area.speed_display), speed);
