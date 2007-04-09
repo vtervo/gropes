@@ -12,7 +12,7 @@ static void update_infoarea(struct map_state *ms, struct item_on_screen *item)
 	char *pos;
 
 	if (item->pos_valid)
-		location_color = "";
+		location_color = g_markup_printf_escaped("%s", "");
 	else
 		location_color = g_markup_printf_escaped(" background=\"red\"");
 
