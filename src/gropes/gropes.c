@@ -270,7 +270,7 @@ static void update_cb(void *arg, const struct gps_data_t *sen)
 
 	fix = &sen->fix;
 	item = &ms->me;
-	if (sen->status == STATUS_NO_FIX) {
+	if (sen->status == STATUS_NO_FIX || sen->online == 0) {
 		if (!item->pos_valid)
 			return;
 		item->pos_valid = item->on_screen = 0;
