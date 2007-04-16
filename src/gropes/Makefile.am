@@ -25,7 +25,8 @@ gropes_maptool_LDADD = @LIBGPSNAV@ $(CURL_LIBS)
 
 
 gropes_maptool_ui_CFLAGSADD = $(CURL_CFLAGS)
-gropes_maptool_ui_SOURCES = gropes-maptool-ui.c
+gropes_maptool_ui_SOURCES = gropes-maptool-ui.c gropes-maptool-ui-mericd.c \
+			    gropes-maptool-ui-oikotie.c
 gropes_maptool_ui_LDADD = @LIBGPSNAV@ $(CURL_LIBS) $(GTK_LIBS) $(PANGO_LIBS) $(GTHREAD_LIBS)
 
 

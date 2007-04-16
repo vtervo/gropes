@@ -4,6 +4,31 @@
 #include <gpsnav/gpsnav.h>
 
 #include "gropes-maptool-ui.h"
+#include "gropes-maptool-ui-mericd.h"
+#include "gropes-maptool-ui-oikotie.h"
+
+static const struct maptool_provider *map_providers[] = {
+	&mericd_prov,
+	&oikotie_prov
+#if 0
+	{"kartta.hel.fi",	get_helfi_ui},
+	{"Expedia",		get_expedia_ui},
+	{"Karttapaikka",	get_karttapaikka_ui},
+#endif
+};
+
+static void maptool_show_dialog(struct maptool_state *ms, const char *text)
+{
+	GtkWidget *dialog;
+
+	dialog = gtk_message_dialog_new(GTK_WINDOW(ms->main_win),
+			GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_ERROR,
+			GTK_BUTTONS_CLOSE,
+			text);
+	gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
+}
 
 static void maptool_finalize(struct maptool_state *ms)
 {
@@ -25,7 +50,6 @@ static void on_menu_exit(GtkAction *action, struct maptool_state *ms)
 
 static void on_menu_new(GtkAction *action, struct maptool_state *ms)
 {
-	GtkWidget *dialog;
 	int r;
 
 	if (ms->nav)
@@ -36,13 +60,7 @@ static void on_menu_new(GtkAction *action, struct maptool_state *ms)
 
 	r = gpsnav_init(&ms->nav);
 	if (r < 0) {
-		dialog = gtk_message_dialog_new(GTK_WINDOW(ms->main_win),
-						GTK_DIALOG_DESTROY_WITH_PARENT,
-						GTK_MESSAGE_ERROR,
-						GTK_BUTTONS_CLOSE,
-						"Error %d creating new database", r);
-		gtk_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
+		maptool_show_dialog(ms, "Error creating new database");
 	}
 }
 
@@ -60,13 +78,7 @@ static void on_menu_open(GtkAction *action, struct maptool_state *ms)
 
 	r = gpsnav_init(&ms->nav);
 	if (r < 0) {
-		dialog = gtk_message_dialog_new(GTK_WINDOW(ms->main_win),
-						GTK_DIALOG_DESTROY_WITH_PARENT,
-						GTK_MESSAGE_ERROR,
-						GTK_BUTTONS_CLOSE,
-						"Error %d creating new database", r);
-		gtk_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
+		maptool_show_dialog(ms, "Error creating new database");
 		return;
 	}
 
@@ -86,13 +98,7 @@ static void on_menu_open(GtkAction *action, struct maptool_state *ms)
 	gtk_widget_destroy(dialog);
 
 	if (r < 0) {
-		dialog = gtk_message_dialog_new(GTK_WINDOW(ms->main_win),
-						GTK_DIALOG_DESTROY_WITH_PARENT,
-						GTK_MESSAGE_ERROR,
-						GTK_BUTTONS_CLOSE,
-						"Error %d reading database", r);
-		gtk_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
+		maptool_show_dialog(ms, "Error reading database");
 		gpsnav_finish(ms->nav);
 	}
 }
@@ -103,13 +109,7 @@ static void on_menu_save_as(GtkAction *action, struct maptool_state *ms)
 	int r = 0;
 
 	if (ms->nav == NULL) {
-		dialog = gtk_message_dialog_new(GTK_WINDOW(ms->main_win),
-						GTK_DIALOG_DESTROY_WITH_PARENT,
-						GTK_MESSAGE_ERROR,
-						GTK_BUTTONS_CLOSE,
-						"No database to save");
-		gtk_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
+		maptool_show_dialog(ms, "No database to save");
 		return;
 	}
 
@@ -141,19 +141,12 @@ static void on_menu_save_as(GtkAction *action, struct maptool_state *ms)
 	gtk_widget_destroy (dialog);
 
 	if (r < 0) {
-		dialog = gtk_message_dialog_new(GTK_WINDOW(ms->main_win),
-						GTK_DIALOG_DESTROY_WITH_PARENT,
-						GTK_MESSAGE_ERROR,
-						GTK_BUTTONS_CLOSE,
-						"Error %d writing database", r);
-		gtk_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
+		maptool_show_dialog(ms, "Error writing database");
 	}
 }
 
 static void on_menu_save(GtkAction *action, struct maptool_state *ms)
 {
-	GtkWidget *dialog;
 	int r;
 
 	if (ms->mapdb_file == NULL) {
@@ -162,26 +155,27 @@ static void on_menu_save(GtkAction *action, struct maptool_state *ms)
 	}
 
 	if (ms->nav == NULL) {
-		dialog = gtk_message_dialog_new(GTK_WINDOW(ms->main_win),
-						GTK_DIALOG_DESTROY_WITH_PARENT,
-						GTK_MESSAGE_ERROR,
-						GTK_BUTTONS_CLOSE,
-						"No database to save");
-		gtk_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
+		maptool_show_dialog(ms, "No database to save");
 		return;
 	}
 
 	r = gpsnav_mapdb_write(ms->nav, ms->mapdb_file);
 	if (r < 0) {
-		dialog = gtk_message_dialog_new(GTK_WINDOW(ms->main_win),
-				GTK_DIALOG_DESTROY_WITH_PARENT,
-				GTK_MESSAGE_ERROR,
-				GTK_BUTTONS_CLOSE,
-				"Error %d writing database", r);
-		gtk_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
+		maptool_show_dialog(ms, "Error writing database");
 	}
+}
+
+static void on_map_type_change(GtkComboBox *type_box, struct maptool_state *ms)
+{
+	int active;
+
+	if (ms->active_prov)
+		ms->active_prov->destroy_ui(ms);
+
+	active = gtk_combo_box_get_active(type_box);
+	ms->active_prov = map_providers[active];
+
+	ms->active_prov->create_ui(ms);
 }
 
 static const GtkActionEntry menu_entries[] = {
@@ -208,16 +202,16 @@ static const char *ui_description =
 
 static int create_maptool_ui(struct maptool_state *ms)
 {
-	GtkWidget *menu_bar, *vbox, *main_frame;
+	GtkWidget *menu_bar, *vbox, *map_box, *map_type_box;
 	GtkUIManager *ui_manager;
 	GtkActionGroup *action_group;
 	GtkAccelGroup *accel_group;
 	GError *error;
+	int i;
 
 	ms->main_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(ms->main_win), "Gropes maptool");
 	vbox = gtk_vbox_new(FALSE, 0);
-	main_frame = gtk_frame_new("Frame");
 	gtk_container_add(GTK_CONTAINER(ms->main_win), vbox);
 
 	action_group = gtk_action_group_new("MenuActions");
@@ -235,12 +229,20 @@ static int create_maptool_ui(struct maptool_state *ms)
 	}
 
 	menu_bar = gtk_ui_manager_get_widget(ui_manager, "/MainMenu");
+	map_type_box = gtk_combo_box_new_text();
+	for (i = 0; i < sizeof(map_providers)/sizeof(map_providers[0]); i++)
+		gtk_combo_box_append_text(GTK_COMBO_BOX(map_type_box), map_providers[i]->text);
+	map_box = gtk_hbox_new(FALSE, 0);
+	ms->map_box = map_box;
+	gtk_signal_connect(GTK_OBJECT(map_type_box), "changed",
+			   GTK_SIGNAL_FUNC(on_map_type_change), ms);
 
 	gtk_box_pack_start(GTK_BOX(vbox), menu_bar, FALSE, FALSE, 2);
-	gtk_box_pack_end(GTK_BOX(vbox), main_frame, TRUE, TRUE, 2);
+	gtk_box_pack_end(GTK_BOX(vbox), map_box, TRUE, TRUE, 2);
+	gtk_box_pack_end(GTK_BOX(vbox), map_type_box, TRUE, TRUE, 2);
 
 	gtk_signal_connect(GTK_OBJECT(ms->main_win), "destroy",
-			   GTK_SIGNAL_FUNC(on_main_window_destroy), NULL);
+			   GTK_SIGNAL_FUNC(on_main_window_destroy), ms);
 
 	gtk_widget_show_all(ms->main_win);
 
