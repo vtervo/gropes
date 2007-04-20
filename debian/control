@@ -1,5 +1,5 @@
 Source: gpsnav
-Section: unknown
+Section: user/accessories
 Priority: optional
 Maintainer: Ville Tervo <ville.tervo@iki.fi>
 Build-Depends: debhelper (>= 4.0.0), autotools-dev
