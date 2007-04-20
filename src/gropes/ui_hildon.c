@@ -199,6 +199,8 @@ int create_hildon_ui(struct gropes_state *gs)
 //	gtk_box_pack_end(GTK_BOX(vbox), map_and_cmd_area, TRUE, TRUE, 2);
 	gtk_container_add(GTK_CONTAINER(vbox), map_and_cmd_area);
 
+	gtk_signal_connect(GTK_OBJECT(main_view), "destroy", GTK_SIGNAL_FUNC(on_main_window_destroy), NULL);
+
 	gtk_widget_show_all(GTK_WIDGET(main_view));
 	gs->big_map.me.update_info = update_infoarea;
 	osso = osso_initialize("gropes", "0.0.2", TRUE, NULL);
