@@ -8,6 +8,7 @@
 #include <string.h>
 #include <assert.h>
 #include <math.h>
+#include <dirent.h>
 #include <sys/stat.h>
 
 #include <gtk/gtk.h>
@@ -303,6 +304,51 @@ static void update_cb(void *arg, const struct gps_data_t *sen)
 	}
 }
 
+static int scan_mapdb(struct gpsnav *nav, const char *dirname, int nest)
+{
+	struct dirent *dent;
+	DIR *dir;
+	char buf[MAXNAMLEN];
+	int r = -1;
+
+	dir = opendir(dirname);
+	if (dir == NULL) {
+		return -1;
+	}
+
+	while ((dent = readdir(dir)) != 0) {
+		char fn[MAXNAMLEN];
+		struct stat st;
+
+		if (strcmp(dent->d_name, ".") == 0 ||
+		    strcmp(dent->d_name, "..") == 0)
+			continue;
+		snprintf(buf, sizeof(buf), "%s/%s", dirname, dent->d_name);
+		if (stat(buf, &st) < 0) {
+			continue;
+		}
+		if (!S_ISDIR(st.st_mode))
+			continue;
+		if (nest > 50) {
+			return -1;
+		}
+		snprintf(fn, sizeof(fn), "%s/mapdb.xml", dirname);
+		if (stat(fn, &st) == 0 && S_ISREG(st.st_mode)) {
+			r = gpsnav_mapdb_read(nav, fn);
+			if (r == 0)
+				break;
+		}
+		r = scan_mapdb(nav, buf, nest + 1);
+		if (r < 0)
+			continue;
+		break;
+	}
+
+	closedir(dir);
+	return r;
+}
+
+
 int main(int argc, char *argv[])
 {
 	struct gpsnav *nav;
@@ -332,14 +378,10 @@ int main(int argc, char *argv[])
 	nav->pc_max_size = 1 * 1024 * 1024;
 	gropes_state.mc_max_size = 10 * 1024 * 1024;
 
-#if 0
-	r = chdir("/media/mmc1/meri-mmc");
-	if (r < 0) {
-		printf("chdir failed %d\n", r);
-		return r;
-	}
-#endif
-	r = gpsnav_mapdb_read(nav, "mapdb.xml");
+	r = scan_mapdb(nav, "/media", 0);
+
+	if (r < 0)
+		r = gpsnav_mapdb_read(nav, "mapdb.xml");
 	if (r < 0) {
 		printf("map_db failed %d\n", r);
 		return r;
