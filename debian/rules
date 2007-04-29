@@ -94,7 +94,7 @@ install-arch:
 
 	# Add here commands to install the arch part of the package into 
 	# debian/tmp.
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/gpsnav
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/gropes
 
 	dh_install -s
 # Must not depend on anything. This is to be called by
@@ -103,7 +103,7 @@ install-arch:
 binary-common:
 	dh_testdir
 	dh_testroot
-	dh_installchangelogs ChangeLog
+#	dh_installchangelogs ChangeLog
 #	dh_installdocs
 #	dh_installexamples
 #	dh_installmenu
@@ -115,7 +115,7 @@ binary-common:
 #	dh_installinit
 #	dh_installcron
 #	dh_installinfo
-	dh_installman
+#	dh_installman
 	dh_link
 	dh_strip
 	dh_compress 

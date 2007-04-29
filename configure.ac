@@ -5,7 +5,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.52)
 
 AC_INIT(src/libgpsnav/gpsnav.c)
-AM_INIT_AUTOMAKE(gpsnav, 0.2.0)
+AM_INIT_AUTOMAKE(gropes, 0.2)
 AM_CONFIG_HEADER(config.h)
 
 AC_CONFIG_MACRO_DIR([m4])
@@ -192,17 +192,12 @@ PKG_CHECK_MODULES(HILDON, hildon-libs >= 0.9.50, has_hildon=true, has_hildon=fal
 if (test x$has_hildon = xtrue); then
 	AC_DEFINE(USE_HILDON, 1, [Enable hildon widgets.])
 	PKG_CHECK_MODULES(HILDON, hildon-libs >= 0.9.50)
-	AC_SUBST(HILDON_LIBS)
-	AC_SUBST(HILDON_CFLAGS)
 
 	# Only used for the .service file path
 	PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= 0.23.4)
 
 	# OSSO application framework dependencies
 	PKG_CHECK_MODULES(OSSO, osso-af-settings >= 0.8.5 libosso >= 0.9.17 gnome-vfs-2.0 >= 2.8.4.11 gnome-vfs-module-2.0 >= 2.8.4.11)
-	AC_SUBST(OSSO_LIBS)
-	AC_SUBST(OSSO_CFLAGS)
-
 
 	# Application pixmaps install directory
 	pixmapdir=`$PKG_CONFIG osso-af-settings --variable=hildonpixmapdir`
@@ -222,6 +217,10 @@ if (test x$has_hildon = xtrue); then
 	desktopentrydir=`$PKG_CONFIG osso-af-settings --variable=desktopentrydir`
 	serviceentrydir=`$PKG_CONFIG osso-af-settings --variable=dbusservicedir`
 
+	AC_SUBST(HILDON_LIBS)
+	AC_SUBST(HILDON_CFLAGS)
+	AC_SUBST(OSSO_LIBS)
+	AC_SUBST(OSSO_CFLAGS)
 	AC_SUBST(pixmapdir)
 	AC_SUBST(icon_26x26dir)
 	AC_SUBST(icon_34x34dir)

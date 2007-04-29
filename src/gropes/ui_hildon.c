@@ -203,7 +203,7 @@ int create_hildon_ui(struct gropes_state *gs)
 
 	gtk_widget_show_all(GTK_WIDGET(main_view));
 	gs->big_map.me.update_info = update_infoarea;
-	osso = osso_initialize("gropes", "0.0.2", TRUE, NULL);
+	osso = osso_initialize("fi.dy.gropes", "1.0", TRUE, NULL);
 	if (osso == NULL)
 		return -1;
 
