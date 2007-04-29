@@ -308,7 +308,7 @@ static int scan_mapdb(struct gpsnav *nav, const char *dirname, int nest)
 {
 	struct dirent *dent;
 	DIR *dir;
-	char buf[MAXNAMLEN];
+	char buf[1024];
 	int r = -1;
 
 	dir = opendir(dirname);
@@ -317,7 +317,7 @@ static int scan_mapdb(struct gpsnav *nav, const char *dirname, int nest)
 	}
 
 	while ((dent = readdir(dir)) != 0) {
-		char fn[MAXNAMLEN];
+		char fn[1024];
 		struct stat st;
 
 		if (strcmp(dent->d_name, ".") == 0 ||
