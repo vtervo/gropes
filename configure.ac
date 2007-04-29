@@ -203,14 +203,31 @@ if (test x$has_hildon = xtrue); then
 	AC_SUBST(OSSO_LIBS)
 	AC_SUBST(OSSO_CFLAGS)
 
+
+	# Application pixmaps install directory
+	pixmapdir=`$PKG_CONFIG osso-af-settings --variable=hildonpixmapdir`
+
+	# Application icon install directories
+	icon_26x26dir=$datadir/icons/hicolor/26x26/hildon
+	icon_34x34dir=$datadir/icons/hicolor/34x34/hildon
+	icon_40x40dir=$datadir/icons/hicolor/40x40/hildon
+	icon_50x50dir=$datadir/icons/hicolor/50x50/hildon
+	icon_scalabledir=$datadir/icons/hicolor/scalable/hildon
+
 	# To make application visible in maemo Task Navigator it needs a Desktop
 	# file for the application.
 	# D-BUS service file is needed to be able to launch the maemo application
 	# and connect it to D-BUS services.
 	# The following line defines install directories for these files.
 	desktopentrydir=`$PKG_CONFIG osso-af-settings --variable=desktopentrydir`
-	serviceentrydir=`$PKG_CONFIG dbus-glib-1 --variable=libdir`/dbus-1.0/services
+	serviceentrydir=`$PKG_CONFIG osso-af-settings --variable=dbusservicedir`
 
+	AC_SUBST(pixmapdir)
+	AC_SUBST(icon_26x26dir)
+	AC_SUBST(icon_34x34dir)
+	AC_SUBST(icon_40x40dir)
+	AC_SUBST(icon_50x50dir)
+	AC_SUBST(icon_scalabledir)
 	AC_SUBST(desktopentrydir)
 	AC_SUBST(serviceentrydir)
 fi

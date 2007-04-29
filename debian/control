@@ -8,8 +8,9 @@ Standards-Version: 3.6.1
 Package: gpsnav
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: Navigation application for Nokia tablets and pc
+ Navigation application that uses MeriCD maps and shows your
+ position if you have gps.
 
 Package: gpsnav-doc
 Architecture: all

@@ -1,7 +1,7 @@
 #
-# This file is part of maemo-mapper
+# This file is part of gropes
 #
-# Copyright (C) 2006 John Costigan.
+# Copyright (C) 2006 Ville Tervo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,8 +18,12 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-serviceentry_DATA = org.gropes.service
+serviceentry_DATA = fi.dy.gropes.service
 
 desktopentry_DATA = gropes.desktop
 
-EXTRA_DIST = $(serviceentry_DATA) $(desktopentry_DATA)
+icon_26x26_DATA = icons/26x26/gropes.png
+icon_40x40_DATA = icons/40x40/gropes.png
+icon_scalable_DATA = icons/scalable/gropes.png
+
+EXTRA_DIST = $(serviceentry_DATA) $(desktopentry_DATA) $(icon_26x26_DATA) $(icon_40x40_DATA) $(icon_scalable_DATA)
