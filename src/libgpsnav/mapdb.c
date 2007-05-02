@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <locale.h>
 
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
@@ -45,6 +46,7 @@ int gpsnav_mapdb_write(struct gpsnav *nav, const char *filename)
 	char *base_path, *p;
 	struct gps_map *map;
 	FILE *f;
+	char *locale;
 
 	f = fopen(filename, "w");
 	if (f == NULL) {
@@ -61,6 +63,8 @@ int gpsnav_mapdb_write(struct gpsnav *nav, const char *filename)
 	if (p != NULL)
 		*p = '\0';
 
+	locale = setlocale(LC_NUMERIC, NULL);
+	setlocale(LC_NUMERIC, "C");
 	fputs("<?xml version=\"1.0\"?>\n", f);
 	fputs("<gpsnav>\n", f);
 	for (map = nav->map_list.lh_first; map != NULL; map = map->entries.le_next) {
@@ -93,6 +97,7 @@ int gpsnav_mapdb_write(struct gpsnav *nav, const char *filename)
 	fputs("</gpsnav>\n", f);
 	free(base_path);
 	fclose(f);
+	setlocale(LC_NUMERIC, locale);
 
 	return 0;
 }
@@ -233,6 +238,7 @@ int gpsnav_mapdb_read(struct gpsnav *nav, const char *filename)
 	xmlDocPtr doc;
 	xmlNodePtr cur;
 	int r = -1;
+	char *locale;
 
 	/* The map path can be relative to the XML file */
 	base_path = gpsnav_get_full_path(filename, NULL);
@@ -260,6 +266,8 @@ int gpsnav_mapdb_read(struct gpsnav *nav, const char *filename)
 	}
 
 	r = 0;
+	locale = setlocale(LC_NUMERIC, NULL);
+	setlocale(LC_NUMERIC, "C");
 	for (cur = cur->xmlChildrenNode; cur != NULL; cur = cur->next) {
 		if (cur->type != XML_ELEMENT_NODE)
 			continue;
@@ -271,6 +279,7 @@ int gpsnav_mapdb_read(struct gpsnav *nav, const char *filename)
 		if (r < 0)
 			break;
 	}
+	setlocale(LC_NUMERIC, locale);
 
 	xmlFreeDoc(doc);
 fail:
