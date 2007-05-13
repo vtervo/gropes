@@ -61,7 +61,9 @@ static const GtkActionEntry menu_entries[] = {
 	{ "ScrollDown", NULL,		   "Scroll _Down",  "Down", "Scroll the map down", G_CALLBACK(on_scroll) },
 	{ "GPSConnect",	NULL,		   "_Connect", "C", "Connect to the GPS receiver", G_CALLBACK(on_gps_connect) },
 	{ "GPSDisconnect",NULL,		   "_Disconnect", "D", "Disconnect from the GPS receiver", G_CALLBACK(on_gps_disconnect) },
-};
+}	{ "TrackMenu",	NULL,		   "_Track" },
+	{ "TrackClear", NULL,		   "Clear track", "<control>C", "Clear track", G_CALLBACK(on_clear_track) },
+;
 
 static const GtkRadioActionEntry mode_entries[] = {
 	{ "ModeTerrestrial",	NULL,	"_Terrestrial",	"<shift>T", "Switch to terrestrial mode", GROPES_MODE_TERRESTRIAL },
@@ -71,6 +73,7 @@ static const GtkRadioActionEntry mode_entries[] = {
 static const GtkToggleActionEntry toggle_entries[] = {
 	{ "GPSFollow",	NULL,	"_Follow", "F", "Center map automatically to GPS location", G_CALLBACK(on_gps_follow), FALSE },
 	{ "FullScreen", NULL,	"Full Screen", "F6", "Full screen", G_CALLBACK(on_hildon_fullscreen), FALSE },
+	{ "TrackDraw",	NULL,   "_DrawTrack", "T", "Draw track", G_CALLBACK(on_draw_track), FALSE },
 };
 
 static const char *ui_description =
@@ -97,6 +100,10 @@ static const char *ui_description =
 "      <menuitem action='ScrollDown'/>"
 "      <menuitem action='ScrollLeft'/>"
 "      <menuitem action='ScrollRight'/>"
+"    </menu>"
+"    <menu action='TrackMenu'>"
+"      <menuitem action='TrackDraw'/>"
+"      <menuitem action='TrackClear'/>"
 "    </menu>"
 "  </menubar>"
 "</ui>";
@@ -191,6 +198,7 @@ int create_hildon_ui(struct gropes_state *gs)
 	gtk_widget_reparent(gtk_ui_manager_get_widget(ui_manager, "/MainMenu/ModeMenu"), main_menu);
 	gtk_widget_reparent(gtk_ui_manager_get_widget(ui_manager, "/MainMenu/GPSMenu"), main_menu);
 	gtk_widget_reparent(gtk_ui_manager_get_widget(ui_manager, "/MainMenu/ViewMenu"), main_menu);
+	gtk_widget_reparent(gtk_ui_manager_get_widget(ui_manager, "/MainMenu/TrackMenu"), main_menu);
 #endif
 
 //	menu_bar = gtk_ui_manager_get_widget (ui_manager, "/MainMenu");

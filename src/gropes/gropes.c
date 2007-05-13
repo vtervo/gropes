@@ -21,6 +21,7 @@
 
 #include "gropes.h"
 #include "config.h"
+#include "ui.h"
 
 struct gropes_state gropes_state;
 
@@ -149,6 +150,43 @@ static void draw_vehicle(struct gpsnav *nav, struct map_state *state)
 	g_object_unref(gc);
 }
 
+static void draw_track(struct map_state *ms, struct item_on_screen *item)
+{
+	GdkGC *gc;
+	GdkColor color;
+	struct item_track *point;
+	int x, y, nx, ny;
+
+	gc = gdk_gc_new(GDK_DRAWABLE(ms->darea->window));
+	if (gc == NULL)
+		return;
+	color.red = 0xffff;
+	color.green = 0x0;
+	color.blue = 0;
+	color.pixel = 0x00ff00;
+
+	gdk_gc_set_foreground(gc, &color);
+	gdk_gc_set_line_attributes(gc, 5, GDK_LINE_SOLID, GDK_CAP_NOT_LAST,
+				   GDK_JOIN_MITER);
+	if (item->track != NULL && item->pos_valid) {
+		if (!get_xy_on_screen(ms, &item->mpos, &x, &y) &&
+		    !get_xy_on_screen(ms, &item->track->mpos, &nx, &ny))
+			gdk_draw_line(ms->darea->window, gc, x, y, nx, ny);
+	}
+
+	for (point = item->track; point != NULL; point = point->next) {
+		if (point->next == NULL)
+			break;
+
+		if (!get_xy_on_screen(ms, &point->mpos, &x, &y) &&
+		    !get_xy_on_screen(ms, &point->next->mpos, &nx, &ny)) {
+			gdk_draw_line(ms->darea->window, gc, x, y, nx, ny);
+		}
+	}
+
+	g_object_unref(gc);
+};
+
 void redraw_map_area(struct gropes_state *state, struct map_state *ms,
 		     GtkWidget *widget, const GdkRectangle *area)
 {
@@ -169,6 +207,8 @@ void redraw_map_area(struct gropes_state *state, struct map_state *ms,
 	if (ms->me.pos_valid && ms->me.on_screen &&
 	    gdk_rectangle_intersect((GdkRectangle *) area, &ms->me.area, &tmp))
 		draw_vehicle(state->nav, ms);
+	if (ms->me.draw_track)
+		draw_track(ms, &ms->me);
 #if 0
 	if (1) {
 		PangoLayout *pl;
@@ -378,10 +418,10 @@ int main(int argc, char *argv[])
 	nav->pc_max_size = 1 * 1024 * 1024;
 	gropes_state.mc_max_size = 10 * 1024 * 1024;
 
-	r = scan_mapdb(nav, "/media", 0);
 
+	r = gpsnav_mapdb_read(nav, "mapdb.xml");
 	if (r < 0)
-		r = gpsnav_mapdb_read(nav, "mapdb.xml");
+		r = scan_mapdb(nav, "/media", 0);
 	if (r < 0) {
 		printf("map_db failed %d\n", r);
 		return r;
@@ -436,7 +476,7 @@ int main(int argc, char *argv[])
 
 	free(maps);
 
-	gropes_state.big_map.me.area.height = gropes_state.big_map.me.area.width = 10;
+	gropes_state.big_map.me.area.height = gropes_state.big_map.me.area.width = 20;
 	gropes_state.big_map.ref_map = ref_map;
 	change_map_center(&gropes_state, &gropes_state.big_map, &center_mpos, scale);
 

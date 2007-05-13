@@ -13,12 +13,18 @@
 
 struct map_state;
 
+struct item_track {
+	struct gps_mcoord mpos;
+	struct item_track *next;
+};
+
 struct item_on_screen {
 	struct gps_coord pos;
 	struct gps_mcoord mpos;
 	struct gps_speed speed;
+	struct item_track *track;
 	GdkRectangle area;
-	int pos_valid:1, on_screen:1;
+	int pos_valid:1, on_screen:1, draw_track:1, follow:1;
 	void (* update_info)(struct map_state *, struct item_on_screen *);
 };
 

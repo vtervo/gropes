@@ -2,9 +2,35 @@
 #include <gtk/gtk.h>
 #include "gropes.h"
 #include "ui.h"
+#include "item.h"
 
 #define DEFAULT_WIDTH		800
 #define DEFAULT_HEIGHT		480
+
+int get_xy_on_screen(struct map_state *ms, const struct gps_mcoord *mpos,
+			    int *x_out, int *y_out)
+{
+	struct gps_marea *marea;
+	int x, y;
+
+	marea = &ms->marea;
+
+	if (mpos->n < marea->start.n || mpos->n >= marea->end.n)
+		return -1;
+	if (mpos->e < marea->start.e || mpos->e >= marea->end.e)
+		return -1;
+
+	x = (mpos->e - marea->start.e) / ms->scale;
+	y = (marea->end.n - mpos->n) / ms->scale;
+	assert(x >= 0 && y >= 0);
+	assert(x < ms->width && y < ms->height);
+
+	*x_out = x;
+	*y_out = y;
+
+	return 0;
+}
+
 
 char *fmt_location(const struct gps_coord *coord)
 {
@@ -47,12 +73,12 @@ gboolean on_darea_clicked(GtkWidget *widget,
 	struct map_state *map_state = user_data;
 	double new_scale;
 	int diff_x, diff_y;
-	GtkToggleAction *action;
+	GtkAction *action;
 
 	action = gtk_ui_manager_get_action(gropes_state.ui_manager,
 					   "ui/MainMenu/GPSMenu/GPSFollow");
 	gropes_state.opt_follow_gps = 0;
-	gtk_toggle_action_set_active(action, FALSE);
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(action), FALSE);
 
 	diff_x = event->x - widget->allocation.width / 2;
 	diff_y = event->y - widget->allocation.height / 2;
@@ -211,6 +237,24 @@ void on_gps_follow(GtkToggleAction *action, struct gropes_state *gs)
 		change_map_center(gs, ms, &ms->me.mpos, ms->scale);
 }
 
+void on_clear_track(GtkAction *action, struct gropes_state *gs)
+{
+	struct map_state *ms = &gs->big_map;
+
+	item_clear_track(&gs->big_map.me);
+	change_map_center(gs, ms, &ms->center_mpos, ms->scale);
+}
+
+void on_draw_track(GtkToggleAction *action, struct gropes_state *gs)
+{
+	struct map_state *ms = &gs->big_map;
+	int draw;
+
+	draw = gtk_toggle_action_get_active(action);
+	item_draw_track(&gs->big_map.me, draw);
+	change_map_center(gs, ms, &ms->center_mpos, ms->scale);
+}
+
 void on_menu_exit(GtkAction *action, struct gropes_state *gs)
 {
 	gropes_shutdown();
@@ -222,7 +266,7 @@ GtkWidget *create_big_map_darea(struct gropes_state *state)
 	GtkWidget *darea;
 
 	darea = gtk_drawing_area_new();
-	gtk_widget_set_size_request(darea, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+//	gtk_widget_set_size_request(darea, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
 	gtk_signal_connect(GTK_OBJECT(darea), "expose-event",
 			   GTK_SIGNAL_FUNC(on_darea_expose), &state->big_map);

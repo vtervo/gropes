@@ -1,31 +1,8 @@
 #include <assert.h>
+#include <stdlib.h>
+#include <string.h>
 #include "gropes.h"
-
-
-static int get_xy_on_screen(struct map_state *ms, const struct gps_mcoord *mpos,
-			    int *x_out, int *y_out)
-{
-	struct gps_marea *marea;
-	int x, y;
-
-	marea = &ms->marea;
-
-	if (mpos->n < marea->start.n || mpos->n >= marea->end.n)
-		return -1;
-	if (mpos->e < marea->start.e || mpos->e >= marea->end.e)
-		return -1;
-
-	x = (mpos->e - marea->start.e) / ms->scale;
-	y = (marea->end.n - mpos->n) / ms->scale;
-	assert(x >= 0 && y >= 0);
-	assert(x < ms->width && y < ms->height);
-
-	*x_out = x;
-	*y_out = y;
-
-	return 0;
-}
-
+#include "ui.h"
 
 void calc_item_pos(struct gropes_state *gs, struct map_state *ms,
 		   struct item_on_screen *item)
@@ -44,6 +21,39 @@ void calc_item_pos(struct gropes_state *gs, struct map_state *ms,
 	area->x -= area->width / 2;
 	area->y -= area->height / 2;
 	item->on_screen = 1;
+}
+
+static void item_save_track(struct item_on_screen *item)
+{
+	struct item_track *point;
+
+	point = malloc(sizeof(struct item_track));
+	if (point == NULL)
+		return;
+
+	memcpy(&point->mpos, &item->mpos, sizeof(struct gps_mcoord));
+	point->next = item->track;
+	item->track = point;
+}
+
+void item_draw_track(struct item_on_screen *item, int draw)
+{
+	item->draw_track = draw;
+}
+
+void item_clear_track(struct item_on_screen *item)
+{
+	struct item_track *point, *next;
+
+	next = item->track;
+
+	while (next) {
+		point = next;
+		next = point->next;
+		free(point);
+	}
+
+	item->track = NULL;
 }
 
 void move_item(struct gropes_state *gs, struct map_state *ms,
@@ -82,6 +92,7 @@ void move_item(struct gropes_state *gs, struct map_state *ms,
 			item->update_info(ms, item);
 		pthread_mutex_lock(&ms->mutex);
 		calc_item_pos(gs, ms, item);
+		item_save_track(item);
 		pthread_mutex_unlock(&ms->mutex);
 		/* Change map center if item is not on screen */
 		if (gs->opt_follow_gps && !item->on_screen)
