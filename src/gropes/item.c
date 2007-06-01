@@ -95,16 +95,13 @@ void move_item(struct gropes_state *gs, struct map_state *ms,
 		item_save_track(item);
 		pthread_mutex_unlock(&ms->mutex);
 		/* Change map center if item is not on screen */
-		if (gs->opt_follow_gps && !item->on_screen)
+		if (gs->opt_follow_gps)
 			change_map_center(gs, ms, &item->mpos, ms->scale);
 		/* Now area contains the new item area */
 		if (area->x == old_area.x && area->y == old_area.y &&
 		    area->height == old_area.height &&
 		    area->width == old_area.width)
 			return;
-
-		if (gs->opt_follow_gps)
-			change_map_center(gs, ms, &item->mpos, ms->scale);
 
 		if (was_valid) {
 			/* Invalidate old area */

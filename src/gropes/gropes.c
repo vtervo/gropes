@@ -166,7 +166,7 @@ static void draw_track(struct map_state *ms, struct item_on_screen *item)
 	color.pixel = 0x00ff00;
 
 	gdk_gc_set_foreground(gc, &color);
-	gdk_gc_set_line_attributes(gc, 5, GDK_LINE_SOLID, GDK_CAP_NOT_LAST,
+	gdk_gc_set_line_attributes(gc, 5, GDK_LINE_SOLID, GDK_CAP_PROJECTING,
 				   GDK_JOIN_MITER);
 	if (item->track != NULL && item->pos_valid) {
 		if (!get_xy_on_screen(ms, &item->mpos, &x, &y) &&
@@ -204,11 +204,11 @@ void redraw_map_area(struct gropes_state *state, struct map_state *ms,
 	black.blue = 0;
 	black.pixel = 0;
 	draw_maps(state, widget, ms->mos_list, area);
+	if (ms->me.draw_track)
+		draw_track(ms, &ms->me);
 	if (ms->me.pos_valid && ms->me.on_screen &&
 	    gdk_rectangle_intersect((GdkRectangle *) area, &ms->me.area, &tmp))
 		draw_vehicle(state->nav, ms);
-	if (ms->me.draw_track)
-		draw_track(ms, &ms->me);
 #if 0
 	if (1) {
 		PangoLayout *pl;
