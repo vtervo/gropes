@@ -56,7 +56,7 @@ void gpsnav_disconnect(struct gpsnav *nav)
 {
 	if (nav->gps_conn == NULL)
 		return;
-	gps_del_callback(nav->gps_conn, &nav->gps_cb_handle);
+//	gps_del_callback(nav->gps_conn, &nav->gps_cb_handle);
 	gps_close(nav->gps_conn);
 	nav->gps_conn = NULL;
 }
