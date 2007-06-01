@@ -61,9 +61,9 @@ static const GtkActionEntry menu_entries[] = {
 	{ "ScrollDown", NULL,		   "Scroll _Down",  "Down", "Scroll the map down", G_CALLBACK(on_scroll) },
 	{ "GPSConnect",	NULL,		   "_Connect", "C", "Connect to the GPS receiver", G_CALLBACK(on_gps_connect) },
 	{ "GPSDisconnect",NULL,		   "_Disconnect", "D", "Disconnect from the GPS receiver", G_CALLBACK(on_gps_disconnect) },
-}	{ "TrackMenu",	NULL,		   "_Track" },
+	{ "TrackMenu",	NULL,		   "_Track" },
 	{ "TrackClear", NULL,		   "Clear track", "<control>C", "Clear track", G_CALLBACK(on_clear_track) },
-;
+};
 
 static const GtkRadioActionEntry mode_entries[] = {
 	{ "ModeTerrestrial",	NULL,	"_Terrestrial",	"<shift>T", "Switch to terrestrial mode", GROPES_MODE_TERRESTRIAL },
@@ -112,7 +112,7 @@ static const char *ui_description =
 int create_hildon_ui(struct gropes_state *gs)
 {
 	HildonProgram *app;
-	GtkWidget *cmd_area, *map_area, *menu_bar, *big_map_darea, *map_and_cmd_area,
+	GtkWidget *cmd_area, *big_map_darea, *map_and_cmd_area,
 		  *vbox, *main_menu;
 	GtkUIManager *ui_manager;
 	GtkActionGroup *action_group;
@@ -192,8 +192,8 @@ int create_hildon_ui(struct gropes_state *gs)
 	gtk_action_set_sensitive(act, FALSE);
 
 #if 1
-	main_menu = GTK_MENU(gtk_menu_new());
-	hildon_window_set_menu(main_view, main_menu);
+	main_menu = gtk_menu_new();
+	hildon_window_set_menu(main_view, GTK_MENU(main_menu));
 	gtk_widget_reparent(gtk_ui_manager_get_widget(ui_manager, "/MainMenu/FileMenu"), main_menu);
 	gtk_widget_reparent(gtk_ui_manager_get_widget(ui_manager, "/MainMenu/ModeMenu"), main_menu);
 	gtk_widget_reparent(gtk_ui_manager_get_widget(ui_manager, "/MainMenu/GPSMenu"), main_menu);
