@@ -242,7 +242,7 @@ struct karttapaikka_map {
 static const struct karttapaikka_map kp_maps[] = {
 	{
 		.name  = "80000",
-		.dim   = 400,
+		.dim   = 600,
 		.extra_pix = 0,
 		.scale = 20,				/* 2.5km / 125 pixels */
 		.marea = {
@@ -253,7 +253,7 @@ static const struct karttapaikka_map kp_maps[] = {
 		},
 	}, {
 		.name  = "40000",
-		.dim   = 400,
+		.dim   = 600,
 		.extra_pix = 0,
 		.scale = 10,				/* 1km / 100 pixels */
 		.marea = {
@@ -264,7 +264,7 @@ static const struct karttapaikka_map kp_maps[] = {
 		},
 	}, {
 		.name  = "16000",
-		.dim   = 400,
+		.dim   = 600,
 		.extra_pix = 0,
 		.scale = 4,				/* 500m / 125 pixels */
 		.marea = {
