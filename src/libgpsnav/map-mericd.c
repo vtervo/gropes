@@ -35,7 +35,7 @@ struct gmb_map {
 	struct gmb_color {
 		uint32_t pix32;
 		uint16_t pix16;
-	} palette[16];
+	} palette[32];
 	void *data;
 
 	char *gmb_filename;
@@ -79,24 +79,43 @@ static int decode_gmb_line(struct gmb_map *img,
 			return -2;
 		c = *p++;
 		left--;
-		count = c & 0x0f;
-		if (count == 0) {
-			/* 16-bit length */
-			if (left < 2)
-				return -2;
-			count = (*p++ << 8);
-			count |= *p++;
-			left -= 2;
-		} else if (count & 0x08) {
-			/* 11-bit length */
+
+		switch (img->nr_colors) {
+		case 16:
+			count = c & 0x0f;
+			if (count == 0) {
+				/* 16-bit length */
+				if (left < 2)
+					return -2;
+				count = (*p++ << 8);
+				count |= *p++;
+				left -= 2;
+			} else if (count & 0x08) {
+				/* 11-bit length */
+				if (left < 1)
+					return -2;
+				count = ((count & 0x07) << 8) + *p++;
+				left--;
+			} else {
+				/* 3-bit length */
+			}
+			color = c >> 4;
+			break;
+		default:
 			if (left < 1)
 				return -2;
-			count = ((count & 0x07) << 8) + *p++;
+			count = *p++;
 			left--;
-		} else {
-			/* 3-bit length */
+			if (count & 0x80) {
+				/* 16-bit length */
+				if (left < 1)
+					return -2;
+				count = ((count & 0x7f) << 8) + *p++;
+				left--;
+			}
+			color = c;
+			break;
 		}
-		color = c >> 4;
 		if (x < x_offset) {
 			if (x + count < x_offset) {
 				/* We discard all the pixels */
